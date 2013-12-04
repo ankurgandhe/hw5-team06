@@ -55,12 +55,10 @@
         <node>QuestionCategoryAnnotator</node>
         <!-- <node>AnswerChoiceCandAnsSynonymScorer</node>-->
         <!--<node>AnswerChoiceCandAnsPMIScorer</node>-->
-        <node>AnswerChoiceCandAnsVectorSimilarityScorer</node>
-      <node>AnswerChoiceCandAnsSimilarityScorer</node>
-      <node>AnswerChoiceCandAnsSynScorer</node>
-        <node>AnswerCandSentSimilarityMatcher</node>
-        <node>AnswerSelectionByKCandVoting</node>
-      </fixedFlow>
+        <node>AnswerChoiceCandAnsSimilarityScorer</node>
+      <node>AnswerChoiceCandAnsPMIScorer</node>
+      <node>AnswerSelectionByKCandVoting</node>
+        </fixedFlow>
     </flowConstraints>
     <typePriorities/>
     <fsIndexCollection/>

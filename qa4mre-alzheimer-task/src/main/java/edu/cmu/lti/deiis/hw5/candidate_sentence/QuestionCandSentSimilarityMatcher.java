@@ -130,10 +130,10 @@ public class QuestionCandSentSimilarityMatcher  extends JCasAnnotator_ImplBase{
 		}
 		
 		ArrayList<VerbPhrase>verbPhrases=Utils.fromFSListToCollection(question.getVerbList(), VerbPhrase.class);
-		
+		/*
 		for(int i=0;i<verbPhrases.size();i++){
               solrQuery+="verbphrases:\""+verbPhrases.get(i).getText()+"\" ";                
-		}
+		}*/
 		
 		
 		
