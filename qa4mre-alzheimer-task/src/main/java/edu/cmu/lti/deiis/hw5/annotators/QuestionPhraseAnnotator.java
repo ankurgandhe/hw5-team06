@@ -115,7 +115,7 @@ public class QuestionPhraseAnnotator extends JCasAnnotator_ImplBase{
 			if(pos.startsWith("NN")){
 				nounPhrase+=word+" ";
 				nounFlag = true;
-			}else if (pos.startsWith("JJ") || pos.startsWith("CD")){
+			}else if ((pos.startsWith("JJ") || pos.startsWith("CD") ) && !nounFlag ){
 			  nounPhrase+=word+" ";
 			}else{
 				nounPhrase=nounPhrase.trim();
@@ -157,7 +157,7 @@ public class QuestionPhraseAnnotator extends JCasAnnotator_ImplBase{
 				verbFlag = true;
 				verbPhrase += word + " ";
 			}
-			else if (pos.startsWith("RB") || pos.startsWith("RP")) {
+			else if  (pos.startsWith("RB") || pos.startsWith("RP") ) {
 				verbPhrase += word + " ";
 			} else {
 				verbPhrase = verbPhrase.trim();
