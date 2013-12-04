@@ -497,6 +497,11 @@ Different categories of questions require different answers (proper noun, common
           <description/>
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>querySimilarityScore</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Nov 25 09:03:30 EST 2013
- * XML source: C:/Users/gandhe/git/hw5-team06-task/qa4mre-base/src/main/resources/TypeSystemDescriptor.xml
+ * Updated by JCasGen Wed Dec 04 17:51:35 EST 2013
+ * XML source: E:/git/hw5-team06/qa4mre-base/src/main/resources/TypeSystemDescriptor.xml
  * @generated */
 public class CandidateAnswer extends Annotation {
   /** @generated
@@ -168,6 +168,24 @@ public class CandidateAnswer extends Annotation {
     if (CandidateAnswer_Type.featOkTst && ((CandidateAnswer_Type)jcasType).casFeat_vectorSimilarityScore == null)
       jcasType.jcas.throwFeatMissing("vectorSimilarityScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
     jcasType.ll_cas.ll_setDoubleValue(addr, ((CandidateAnswer_Type)jcasType).casFeatCode_vectorSimilarityScore, v);}    
+   
+    
+  //*--------------*
+  //* Feature: querySimilarityScore
+
+  /** getter for querySimilarityScore - gets 
+   * @generated */
+  public double getQuerySimilarityScore() {
+    if (CandidateAnswer_Type.featOkTst && ((CandidateAnswer_Type)jcasType).casFeat_querySimilarityScore == null)
+      jcasType.jcas.throwFeatMissing("querySimilarityScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
+    return jcasType.ll_cas.ll_getDoubleValue(addr, ((CandidateAnswer_Type)jcasType).casFeatCode_querySimilarityScore);}
+    
+  /** setter for querySimilarityScore - sets  
+   * @generated */
+  public void setQuerySimilarityScore(double v) {
+    if (CandidateAnswer_Type.featOkTst && ((CandidateAnswer_Type)jcasType).casFeat_querySimilarityScore == null)
+      jcasType.jcas.throwFeatMissing("querySimilarityScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
+    jcasType.ll_cas.ll_setDoubleValue(addr, ((CandidateAnswer_Type)jcasType).casFeatCode_querySimilarityScore, v);}    
     //*--------------*
   //* Feature: synonymScore
 

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>false</primitive>
+  <delegateAnalysisEngineSpecifiers>
+    <delegateAnalysisEngine key="AnswerChoiceCandAnsPMIScorer">
+      <import location="annotators/AnswerChoiceCandAnsPMIScorer.xml"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="AnswerSelectionByKCandAggregation">
+      <import location="annotators/AnswerSelectionByKCandAggregation.xml"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="AnswerSelectionByKCandVoting">
+      <import location="annotators/AnswerSelectionByKCandVoting.xml"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="QuestionCandSentSimilarityMatcher">
+      <import location="annotators/QuestionCandSentSimilarityMatcher.xml"/>
+    </delegateAnalysisEngine>
+    <!-- <delegateAnalysisEngine key="AnswerChoiceCandAnsSynonymScorer">
+      <import location="annotators/AnswerChoiceCandAnsSynonymScorer.xml"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="QuestionCandSentSynonymMatcher">
+      <import location="annotators/QuestionCandSentSynonymMatcher.xml"/>
+    </delegateAnalysisEngine>-->
+    <!-- <delegateAnalysisEngine key="QuestionCandSentDependencyMatcher">
+      <import location="annotators/QuestionCandSentDependencyMatcher.xml"/>
+    </delegateAnalysisEngine>-->
+    <delegateAnalysisEngine key="AnswerChoiceCandAnsSimilarityScorer">
+      <import name="annotators.AnswerChoiceCandAnsSimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceCandAnsVectorSimilarityScorer">
+      <import name="annotators.AnswerChoiceCandAnsVectorSimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceCandAnsSynScorer">
+      <import name="annotators.AnswerChoiceCandAnsSynScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerCandSentSimilarityMatcher">
+      <import name="annotators.AnswerCandSentSimilarityMatcher"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="QuestionCategoryAnnotator">
+      <import name="annotators.QuestionCategoryAnnotator"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="QuestionAnswerCandSentSimilarityMatcher">
+      <import name="annotators.QuestionAnswerCandSentSimilarityMatcher"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceQuerySimilarityScorer">
+      <import name="annotators.AnswerChoiceQuerySimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerSelectionByKCandMaxAggregation">
+      <import name="annotators.AnswerSelectionByKCandMaxAggregation"/>
+    </delegateAnalysisEngine>
+  </delegateAnalysisEngineSpecifiers>
+  <analysisEngineMetaData>
+    <name>CpeQuestionDescriptor</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+    <configurationParameters searchStrategy="language_fallback"/>
+    <configurationParameterSettings/>
+    <flowConstraints>
+      <fixedFlow>
+        <node>QuestionAnswerCandSentSimilarityMatcher</node>
+        <!-- <node>QuestionCandSentSynonymMatcher</node>-->
+        <!-- <node>QuestionCandSentDependencyMatcher</node>-->
+        <node>QuestionCategoryAnnotator</node>
+        <!-- <node>AnswerChoiceCandAnsSynonymScorer</node>-->
+        <!--<node>AnswerChoiceCandAnsPMIScorer</node>-->
+        <node>AnswerChoiceCandAnsVectorSimilarityScorer</node>
+      <node>AnswerChoiceCandAnsSimilarityScorer</node>
+      <node>AnswerChoiceQuerySimilarityScorer</node>
+        <node>AnswerChoiceCandAnsSynScorer</node>
+        <node>AnswerSelectionByKCandMaxAggregation</node>
+      </fixedFlow>
+    </flowConstraints>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
