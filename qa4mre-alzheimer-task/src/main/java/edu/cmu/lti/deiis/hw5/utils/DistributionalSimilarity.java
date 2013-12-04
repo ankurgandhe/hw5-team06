@@ -1,3 +1,4 @@
+
 package edu.cmu.lti.deiis.hw5.utils;
 
 import java.io.BufferedReader;
@@ -140,53 +141,56 @@ public class DistributionalSimilarity {
 
 	}
 
-	public void testModel(String query) {
+	public String[] testModel(String query) {
 
-		String queryArray[] = query.split(" ");
+        //        if(query==null || )
+                
+                String queryArray[] = query.split(" ");
 
-		int a;
-		double[] queryVector;
-		queryVector = getSentenceVector(query);
+                int a;
+                double[] queryVector;
+                queryVector = getSentenceVector(query);
+                int topN = 20;
+                String[] bestw = new String[topN];
+                double[] bestd = new double[topN];
 
-		int topN = 20;
-		String[] bestw = new String[topN];
-		double[] bestd = new double[topN];
+                for (a = 0; a < topN; a++)
+                        bestw[a] = "";
 
-		for (a = 0; a < topN; a++)
-			bestw[a] = "";
+                for (String word : vocab) {
+                        int check = 1;
 
-		for (String word : vocab) {
-			int check = 1;
+                        for (String qWord : queryArray) {
+                                if (word.contentEquals(qWord)) {
+                                        check = 0;
+                                        break;
+                                }
+                        }
+                        if (check == 0) {
+                                continue;
+                        }
 
-			for (String qWord : queryArray) {
-				if (word.contentEquals(qWord)) {
-					check = 0;
-					break;
-				}
-			}
-			if (check == 0) {
-				continue;
-			}
+                        double[] wordVector = wordVectorMap.get(word);
+                        double dist = getDistance(wordVector, queryVector);
 
-			double[] wordVector = wordVectorMap.get(word);
-			double dist = getDistance(wordVector, queryVector);
+                        for (a = 0; a < topN; a++) {
+                                if (dist > bestd[a]) {
+                                        for (int d = topN - 1; d > a; d--) {
+                                                bestd[d] = bestd[d - 1];
+                                                bestw[d] = bestw[d - 1];
+                                        }
+                                        bestd[a] = dist;
+                                        bestw[a] = word;
+                                        break;
+                                }
+                        }
+                }
 
-			for (a = 0; a < topN; a++) {
-				if (dist > bestd[a]) {
-					for (int d = topN - 1; d > a; d--) {
-						bestd[d] = bestd[d - 1];
-						bestw[d] = bestw[d - 1];
-					}
-					bestd[a] = dist;
-					bestw[a] = word;
-					break;
-				}
-			}
-		}
+        //        for (a = 0; a < topN; a++)
+        //                System.out.println(bestw[a] + "\t" + bestd[a]);
 
-		for (a = 0; a < topN; a++)
-			System.out.println(bestw[a] + "\t" + bestd[a]);
-	}
+        return bestw;
+        }
 	public boolean isOOV(String word){
 		if (vocab.contains(word))
 			return true;
