@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 /target
 /persistence
 /nohup.out
 /model
 /results
 /XMIs
+=======
+/target
+/persistence
+/nohup.out
+/model
+>>>>>>> refs/heads/skohliBio2

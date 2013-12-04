@@ -1,9 +1,13 @@
 package edu.cmu.lti.deiis.hw5.utils;
 
+
+
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 //import java.util.Map;
 import java.util.Set;
 
@@ -65,6 +69,19 @@ public class SetUtil {
 
 	public static Set<String> addStringArray(Set<String> set, String[] array) {
 		set = checkSet(set);
+
+		for (String string : array) {
+			set.add(string);
+
+		}
+
+		return set;
+
+	}
+	
+
+	public static Queue<String>  addStringArraytoQueue(Queue<String> set , String[] array) {
+		//set = checkSet(set);
 
 		for (String string : array) {
 			set.add(string);
