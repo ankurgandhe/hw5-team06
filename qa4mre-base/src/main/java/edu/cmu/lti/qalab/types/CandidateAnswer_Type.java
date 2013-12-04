@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Mon Nov 18 17:28:58 EST 2013
+ * Updated by JCasGen Mon Nov 25 09:03:30 EST 2013
  * @generated */
 public class CandidateAnswer_Type extends Annotation_Type {
   /** @generated */
@@ -135,24 +135,6 @@ public class CandidateAnswer_Type extends Annotation_Type {
   
  
   /** @generated */
-  final Feature casFeat_synonymScore;
-  /** @generated */
-  final int     casFeatCode_synonymScore;
-  /** @generated */ 
-  public double getSynonymScore(int addr) {
-        if (featOkTst && casFeat_synonymScore == null)
-      jcas.throwFeatMissing("synonymScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
-    return ll_cas.ll_getDoubleValue(addr, casFeatCode_synonymScore);
-  }
-  /** @generated */    
-  public void setSynonymScore(int addr, double v) {
-        if (featOkTst && casFeat_synonymScore == null)
-      jcas.throwFeatMissing("synonymScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
-    ll_cas.ll_setDoubleValue(addr, casFeatCode_synonymScore, v);}
-    
-  
- 
-  /** @generated */
   final Feature casFeat_vectorSimilarityScore;
   /** @generated */
   final int     casFeatCode_vectorSimilarityScore;
@@ -172,6 +154,24 @@ public class CandidateAnswer_Type extends Annotation_Type {
 
 
 
+  /** @generated */
+  final Feature casFeat_synonymScore;
+  /** @generated */
+  final int     casFeatCode_synonymScore;
+  /** @generated */ 
+  public double getSynonymScore(int addr) {
+        if (featOkTst && casFeat_synonymScore == null)
+      jcas.throwFeatMissing("synonymScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
+    return ll_cas.ll_getDoubleValue(addr, casFeatCode_synonymScore);
+  }
+  /** @generated */    
+  public void setSynonymScore(int addr, double v) {
+        if (featOkTst && casFeat_synonymScore == null)
+      jcas.throwFeatMissing("synonymScore", "edu.cmu.lti.qalab.types.CandidateAnswer");
+    ll_cas.ll_setDoubleValue(addr, casFeatCode_synonymScore, v);}
+    
+  
+ 
   /** initialize variables to correspond with Cas Type and Features
 	* @generated */
   public CandidateAnswer_Type(JCas jcas, Type casType) {

@@ -83,7 +83,10 @@ public class QuestionCandSentSimilarityMatcher  extends JCasAnnotator_ImplBase{
 						continue;
 					}
 					String sentIdx=sentId.replace(docId,"").replace("_", "").trim();
-					int idx=Integer.parseInt(sentIdx);
+					int idx=Integer.parseInt(sentIdx);	
+					if (idx> sentenceList.size())
+						continue; 
+					
 					Sentence annSentence=sentenceList.get(idx);
 					
 					String sentence=doc.get("text").toString();
@@ -127,10 +130,10 @@ public class QuestionCandSentSimilarityMatcher  extends JCasAnnotator_ImplBase{
 		}
 		
 		ArrayList<VerbPhrase>verbPhrases=Utils.fromFSListToCollection(question.getVerbList(), VerbPhrase.class);
-		
+		/*
 		for(int i=0;i<verbPhrases.size();i++){
               solrQuery+="verbphrases:\""+verbPhrases.get(i).getText()+"\" ";                
-		}
+		}*/
 		
 		
 		

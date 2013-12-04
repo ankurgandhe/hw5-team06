@@ -69,7 +69,7 @@ public class AnswerChoiceCandAnsSynonymScorer extends JCasAnnotator_ImplBase {
 				//ArrayList<NER> candSentNers = Utils.fromFSListToCollection(
 					//	candSent.getSentence().getNerList(), NER.class);
 				//get NamedEntities
-
+				
 				ArrayList<CandidateAnswer> candAnsList = new ArrayList<CandidateAnswer>();
 				for (int j = 0; j < choiceList.size(); j++) {
 

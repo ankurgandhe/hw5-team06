@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>edu.cmu.lti.deiis.hw5.annotators.QuestionCategoryAnnotator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>QuestionCategoryAnnotatorDescriptor</name>
+    <description>Determines what type of question is being asked, i.e. is it asking for a quantity, a temporal expression, a person, etc.</description>
+    <version>1.0</version>
+    <vendor/>
+   <configurationParameters/>
+    <configurationParameterSettings/>
+    <!--  <configurationParameters>
+      <configurationParameter>
+        <name>NOISE_THRESHOLD</name>
+        <description>noise score</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>NOISE_THRESHOLD</name>
+        <value>
+          <string>0.20</string>
+        </value>
+      </nameValuePair>
+      
+    </configurationParameterSettings>
+    -->
+    <typeSystemDescription/>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

@@ -54,12 +54,16 @@
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>edu.cmu.lti.qalab.types.VerbPhrase</elementType>
         </featureDescription>
-        
         <featureDescription>
           <name>nerList</name>
           <description/>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>edu.cmu.lti.qalab.types.NER</elementType>
+        </featureDescription>
+      <featureDescription>
+          <name>interrogative</name>
+          <description>Is this sentence a question? TRUE if yes, FALSE if no</description>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
@@ -286,6 +290,11 @@
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>edu.cmu.lti.qalab.types.Dependency</elementType>
         </featureDescription>
+      <featureDescription>
+          <name>AnswerScore</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -332,6 +341,17 @@
           <description/>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>edu.cmu.lti.qalab.types.Token</elementType>
+        </featureDescription>
+      <featureDescription>
+          <name>category</name>
+          <description>What kind of question is this? Who, what, where, when, why or which answer is a true statement, etc.
+Different categories of questions require different answers (proper noun, common noun, verb phrase, etc.)</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>askingFor</name>
+          <description>If the question is the appropriate type, what should the answer be? I.e. if it asks "Which amino acid does X?" this feature should be "amino acid" since the answer must be a type of amino acid.</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

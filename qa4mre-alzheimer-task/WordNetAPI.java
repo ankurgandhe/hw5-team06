@@ -62,6 +62,7 @@ public class WordNetAPI {
 		// database.getBaseFormCandidates(word, SynsetType.NOUN);
 		// Synset[] synsets = database.getSynsets(word, SynsetType.VERB);
 		Synset[] synsets = database.getSynsets(word, SynsetType.NOUN);
+		
 		// database.get
 		for (int i = 0; i < synsets.length; i++) {
 			nounSynset = (NounSynset) (synsets[i]);

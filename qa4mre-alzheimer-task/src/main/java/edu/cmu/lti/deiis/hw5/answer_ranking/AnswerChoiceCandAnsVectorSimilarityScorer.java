@@ -39,13 +39,14 @@ public class AnswerChoiceCandAnsVectorSimilarityScorer extends
 		super.initialize(context);
 		K_CANDIDATES = (Integer) context
 				.getConfigParameterValue("K_CANDIDATES");
-		vectorModel = new DistributionalSimilarity();
-		String filename = "model\\alzheimer.tok.model.320";
+		vectorModel = DistributionalSimilarity.getInstance();
+		/*String filename = "model\\alzheimer.tok.model.320";
+		//String filename = "model\\alzheimer+12-test.tok.model.320";
 		try {
 			vectorModel.readModel(filename);			
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override

@@ -14,7 +14,27 @@ public class DistributionalSimilarity {
 	public ArrayList<String> vocab;
 	double vocabSize;
 	int vectorSize;
-
+	static DistributionalSimilarity DS;
+	
+	public static DistributionalSimilarity getInstance(){
+		
+		String filename = "model\\alzheimer.tok.model.320";
+		if (DS==null){
+			DS = new DistributionalSimilarity(filename);
+			
+		}
+		return DS;
+	}
+	
+	private DistributionalSimilarity(String filename){
+		try {
+			readModel(filename);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void readModel(String filename) throws IOException {
 
 		wordVectorMap = new HashMap<String, double[]>();
@@ -48,6 +68,8 @@ public class DistributionalSimilarity {
 				vocab.add(word);
 				wordVectorMap.put(word, wVector);
 				count++;
+				if (count%50000==0)
+					System.out.print(count+"...");
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -108,7 +130,10 @@ public class DistributionalSimilarity {
 		double score = 0.0;
 		for (int a = 0; a < vectorSize; a++)
 			score += w1Vector[a] * w2Vector[a];
-		
+		/*if (score==0.0)
+			score=0.5;*/
+		/*else
+			score=1;*/
 		return score;
 
 	}
@@ -168,8 +193,9 @@ public class DistributionalSimilarity {
 				
 	}
 	public static void main(String[] args) throws Exception {
-		DistributionalSimilarity DS = new DistributionalSimilarity();
 		String filename = "C:\\Users\\gandhe\\Dropbox\\Semester 3\\Software_Engineering\\assign5\\background\\word2vec\\alzheimer.tok.model.320";
-		DS.readModel(filename);
+		DistributionalSimilarity DS = new DistributionalSimilarity(filename);
+		
+		//DS.readModel(filename);
 	}
 }

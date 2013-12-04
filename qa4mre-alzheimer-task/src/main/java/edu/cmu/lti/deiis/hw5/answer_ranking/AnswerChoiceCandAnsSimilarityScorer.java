@@ -17,6 +17,7 @@ import edu.cmu.lti.qalab.types.NounPhrase;
 import edu.cmu.lti.qalab.types.Question;
 import edu.cmu.lti.qalab.types.QuestionAnswerSet;
 import edu.cmu.lti.qalab.types.TestDocument;
+import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.cmu.lti.qalab.utils.Utils;
 
 public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase {
@@ -60,6 +61,9 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 								.getPhraseList(), NounPhrase.class);//getNouns
 				ArrayList<NER> candSentNers = Utils.fromFSListToCollection(
 						candSent.getSentence().getNerList(), NER.class);
+				ArrayList<VerbPhrase> candSentVerbs = Utils.fromFSListToCollection(
+						candSent.getSentence().getVerbPhraseList(), VerbPhrase.class);
+				
 				//get NamedEntities
 				
 				ArrayList<CandidateAnswer> candAnsList = new ArrayList<CandidateAnswer>();
@@ -73,22 +77,27 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 									NounPhrase.class);
 					ArrayList<NER> choiceNERs = Utils.fromFSListToCollection(
 							answer.getNerList(), NER.class);
-
+					ArrayList<VerbPhrase> choiceVerbs = Utils
+							.fromFSListToCollection(answer.getVerbPhraseList(),
+									VerbPhrase.class);
 					int nnMatch = 0;
 					int nerMatch = 0;
+					int vbMatch = 0;
 					for (int k = 0; k < candSentNouns.size(); k++) {
 						// If candidate Noun Phrase contains answer NER
 						for (int l = 0; l < choiceNERs.size(); l++) {
 							if (candSentNouns.get(k).getText()
-									.contains(choiceNERs.get(l).getText())) {
+									.contains(choiceNERs.get(l).getText()) || computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNERs.get(l).getText())<=1 ) {
 								nerMatch++;
 							}
 						}
 						// If candidate Noun phrase contains answer Nouns
 						for (int l = 0; l < choiceNouns.size(); l++) {
 							if (candSentNouns.get(k).getText()
-									.contains(choiceNouns.get(l).getText())) {
+									.contains(choiceNouns.get(l).getText()) ) {
+								//|| computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNouns.get(l).getText())<=1)
 								nnMatch++;
+								
 							}
 						}
 					}
@@ -96,24 +105,36 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 					for (int k = 0; k < candSentNers.size(); k++) {
 						for (int l = 0; l < choiceNERs.size(); l++) {
 							if (candSentNers.get(k).getText()
-									.contains(choiceNERs.get(l).getText())) {
+									.contains(choiceNERs.get(l).getText()) ) {
+								//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
 								nerMatch++;
 							}
 						}
 						for (int l = 0; l < choiceNouns.size(); l++) {
 							if (candSentNers.get(k).getText()
-									.contains(choiceNouns.get(l).getText())) {
-								nnMatch++;
+									.contains(choiceNouns.get(l).getText()) ) {
+								nnMatch++;//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNouns.get(l).getText())<=1 
 							}
 						}
 
 					}
-					
+
+					// Same as above, for Verbs
+					for (int k = 0; k < candSentVerbs.size(); k++) {
+						for (int l = 0; l < choiceVerbs.size(); l++) {
+							if (candSentVerbs.get(k).getText()
+									.contains(choiceVerbs.get(l).getText()) ) {
+								//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
+								vbMatch++;
+							}
+						}
+
+					}
 					// Add scores of matches of Answer NER with NN
 					//nerMatch=nerMatch/(candSentNouns.size()+candSentNers.size());
 					//nnMatch=nnMatch/(candSentNouns.size()+candSentNers.size());
 					
-					nnMatch+=nerMatch;
+					nnMatch+=nerMatch+vbMatch;
 					System.out.println(choiceList.get(j).getText() + "\t"
 							+ nnMatch);
 					CandidateAnswer candAnswer = null;
@@ -151,6 +172,29 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 		FSList fsQASet = Utils.fromCollectionToFSList(aJCas, qaSet);
 		testDoc.setQaList(fsQASet);
 
+	}
+
+	public static int computeLevenshteinDistance(String str1,String str2) {
+        int[][] distance = new int[str1.length() + 1][str2.length() + 1];
+
+        for (int i = 0; i <= str1.length(); i++)
+                distance[i][0] = i;
+        for (int j = 1; j <= str2.length(); j++)
+                distance[0][j] = j;
+
+        for (int i = 1; i <= str1.length(); i++)
+                for (int j = 1; j <= str2.length(); j++)
+                        distance[i][j] = minimum(
+                                        distance[i - 1][j] + 1,
+                                        distance[i][j - 1] + 1,
+                                        distance[i - 1][j - 1]+ ((str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1));
+        
+        return distance[str1.length()][str2.length()];    
+}
+
+	private static int minimum(int i, int j, int k) {
+		 return Math.min(Math.min(i, j), k);
+		
 	}
 
 }

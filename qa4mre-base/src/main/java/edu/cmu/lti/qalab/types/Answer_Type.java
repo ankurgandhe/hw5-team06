@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Mon Nov 18 17:28:58 EST 2013
+ * Updated by JCasGen Mon Nov 25 09:03:30 EST 2013
  * @generated */
 public class Answer_Type extends Annotation_Type {
   /** @generated */
@@ -259,6 +259,24 @@ public class Answer_Type extends Annotation_Type {
     ll_cas.ll_setRefValue(addr, casFeatCode_dependencies, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_AnswerScore;
+  /** @generated */
+  final int     casFeatCode_AnswerScore;
+  /** @generated */ 
+  public double getAnswerScore(int addr) {
+        if (featOkTst && casFeat_AnswerScore == null)
+      jcas.throwFeatMissing("AnswerScore", "edu.cmu.lti.qalab.types.Answer");
+    return ll_cas.ll_getDoubleValue(addr, casFeatCode_AnswerScore);
+  }
+  /** @generated */    
+  public void setAnswerScore(int addr, double v) {
+        if (featOkTst && casFeat_AnswerScore == null)
+      jcas.throwFeatMissing("AnswerScore", "edu.cmu.lti.qalab.types.Answer");
+    ll_cas.ll_setDoubleValue(addr, casFeatCode_AnswerScore, v);}
+    
+  
 
 
 
@@ -315,6 +333,10 @@ public class Answer_Type extends Annotation_Type {
  
     casFeat_dependencies = jcas.getRequiredFeatureDE(casType, "dependencies", "uima.cas.FSList", featOkTst);
     casFeatCode_dependencies  = (null == casFeat_dependencies) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_dependencies).getCode();
+
+ 
+    casFeat_AnswerScore = jcas.getRequiredFeatureDE(casType, "AnswerScore", "uima.cas.Double", featOkTst);
+    casFeatCode_AnswerScore  = (null == casFeat_AnswerScore) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_AnswerScore).getCode();
 
   }
 }

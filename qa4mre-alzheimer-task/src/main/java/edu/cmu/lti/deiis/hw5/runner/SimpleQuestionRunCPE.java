@@ -77,7 +77,7 @@ public class SimpleQuestionRunCPE extends Thread {
       String line = new BufferedReader(new InputStreamReader(System.in)).readLine();
       if ("abort".equals(line) && mCPE.isProcessing()) {
         System.out.println("Aborting...");
-        mCPE.stop();
+        mCPE.stop();	
         break;
       }
     }
