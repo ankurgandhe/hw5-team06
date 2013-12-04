@@ -13,12 +13,15 @@ import org.apache.uima.resource.ResourceInitializationException;
 import edu.cmu.lti.qalab.types.Answer;
 import edu.cmu.lti.qalab.types.CandidateAnswer;
 import edu.cmu.lti.qalab.types.CandidateSentence;
+import edu.cmu.lti.qalab.types.NER;
+import edu.cmu.lti.qalab.types.NounPhrase;
 import edu.cmu.lti.qalab.types.Question;
 import edu.cmu.lti.qalab.types.QuestionAnswerSet;
 import edu.cmu.lti.qalab.types.TestDocument;
+import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.cmu.lti.qalab.utils.Utils;
 
-public class AnswerSelectionByKCandAggregation extends JCasAnnotator_ImplBase {
+public class AnswerSelectionByKCandMaxAggregation extends JCasAnnotator_ImplBase {
 
 	int K_CANDIDATES = 5;
 
@@ -73,18 +76,26 @@ public class AnswerSelectionByKCandAggregation extends JCasAnnotator_ImplBase {
 								CandidateAnswer.class);
 
 				for (int j = 0; j < candAnswerList.size(); j++) {
-
+				  
 					CandidateAnswer candAns = candAnswerList.get(j);
 					String answer = candAns.getText();
-					double totalScore = candAns.getSimilarityScore()
-							+ candAns.getSynonymScore() + candAns.getPMIScore();
-
-					Double existingVal=hshAnswer.get(answer);
-					if(existingVal==null){
-						existingVal=new Double(0.0);
-					}
-					hshAnswer.put(answer, existingVal+totalScore);
 					
+					
+					if(!answer.equals("None of the above")){
+					  double totalScore = candAns.getSimilarityScore()
+					          + candAns.getVectorSimilarityScore() + 5*candAns.getQuerySimilarityScore();
+
+					  Double existingVal=hshAnswer.get(answer);
+					  if(existingVal==null){
+					    existingVal=new Double(0.0);
+					  }
+					  if(totalScore>existingVal){
+					    existingVal=totalScore;
+					  }
+					  hshAnswer.put(answer, existingVal);
+					}else{
+					  hshAnswer.put(answer, 0.0);
+					}
 				}
 			}
 
@@ -95,6 +106,11 @@ public class AnswerSelectionByKCandAggregation extends JCasAnnotator_ImplBase {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			if(bestChoice == null && choiceList.get(choiceList.size()-1).getText().equals("None of the above")){
+			  bestChoice=choiceList.get(choiceList.size()-1).getText();
+			}
+			
 			System.out.println("Correct Choice: " + "\t" + correct);
 			System.out.println("Best Choice: " + "\t" + bestChoice);
 
@@ -135,10 +151,12 @@ public class AnswerSelectionByKCandAggregation extends JCasAnnotator_ImplBase {
 			if (val > maxScore) {
 				maxScore = val;
 				bestAns = key;
-			}
+			}  
 
 		}
-
+		if(maxScore<5){
+		  bestAns=null;
+		}
 		return bestAns;
 	}
 

@@ -25,13 +25,28 @@
       <import location="annotators/QuestionCandSentDependencyMatcher.xml"/>
     </delegateAnalysisEngine>-->
     <delegateAnalysisEngine key="AnswerChoiceCandAnsSimilarityScorer">
-      <import location="annotators/AnswerChoiceCandAnsSimilarityScorer.xml"/>
+      <import name="annotators.AnswerChoiceCandAnsSimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceCandAnsVectorSimilarityScorer">
+      <import name="annotators.AnswerChoiceCandAnsVectorSimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceCandAnsSynScorer">
+      <import name="annotators.AnswerChoiceCandAnsSynScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerCandSentSimilarityMatcher">
+      <import name="annotators.AnswerCandSentSimilarityMatcher"/>
     </delegateAnalysisEngine>
   <delegateAnalysisEngine key="QuestionCategoryAnnotator">
       <import name="annotators.QuestionCategoryAnnotator"/>
     </delegateAnalysisEngine>
-  <delegateAnalysisEngine key="QuestionPhraseAnnotator">
-      <import name="annotators.QuestionPhraseAnnotator"/>
+  <delegateAnalysisEngine key="QuestionAnswerCandSentSimilarityMatcher">
+      <import name="annotators.QuestionAnswerCandSentSimilarityMatcher"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceQuerySimilarityScorer">
+      <import name="annotators.AnswerChoiceQuerySimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerSelectionByKCandMaxAggregation">
+      <import name="annotators.AnswerSelectionByKCandMaxAggregation"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
@@ -43,8 +58,18 @@
     <configurationParameterSettings/>
     <flowConstraints>
       <fixedFlow>
+        <node>QuestionAnswerCandSentSimilarityMatcher</node>
+        <!-- <node>QuestionCandSentSynonymMatcher</node>-->
+        <!-- <node>QuestionCandSentDependencyMatcher</node>-->
         <node>QuestionCategoryAnnotator</node>
-        </fixedFlow>
+        <!-- <node>AnswerChoiceCandAnsSynonymScorer</node>-->
+        <!--<node>AnswerChoiceCandAnsPMIScorer</node>-->
+        <node>AnswerChoiceCandAnsVectorSimilarityScorer</node>
+      <node>AnswerChoiceCandAnsSimilarityScorer</node>
+      <node>AnswerChoiceQuerySimilarityScorer</node>
+        <node>AnswerChoiceCandAnsSynScorer</node>
+        <node>AnswerSelectionByKCandMaxAggregation</node>
+      </fixedFlow>
     </flowConstraints>
     <typePriorities/>
     <fsIndexCollection/>

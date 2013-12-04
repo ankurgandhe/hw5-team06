@@ -2,52 +2,65 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>edu.cmu.lti.deiis.hw5.annotators.NoiseFilter</annotatorImplementationName>
+  <annotatorImplementationName>edu.cmu.lti.deiis.hw5.candidate_sentence.QuestionAnswerCandSentSimilarityMatcher</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>NoiseFilterDescriptor</name>
+    <name>QuestionCandSentSimilarityMatcherDescriptor</name>
     <description/>
     <version>1.0</version>
     <vendor/>
     <configurationParameters>
       <configurationParameter>
-        <name>QUALITY_THRESHOLD</name>
-        <description>quality score threshold</description>
-        <type>Float</type>
+        <name>SOLR_SERVER_URL</name>
+        <description>solr server url</description>
+        <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
-      </configurationParameter>      
+      </configurationParameter>    
       <configurationParameter>
-        <name>MIN_WORDS</name>
-        <description>minimum words to consider</description>
+        <name>SOLR_CORE</name>
+        <description>noise score</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>SCHEMA_NAME</name>
+        <description>schema name</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>TOP_SEARCH_RESULTS</name>
+        <description>top search results</description>
         <type>Integer</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
-      </configurationParameter>      
-      <configurationParameter>
-        <name>MIN_LENGTH</name>
-        <description>minimum sentence length to consider</description>
-        <type>Integer</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>          
+      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>QUALITY_THRESHOLD</name>
+        <name>SOLR_SERVER_URL</name>
         <value>
-          <float>0.75</float>
+          <string>http://localhost:8983/solr/</string>
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>MIN_WORDS</name>
+        <name>SOLR_CORE</name>
+        <value>
+          <string>qa4mre</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>SCHEMA_NAME</name>
+        <value>
+          <string>clef-alzhemer-task</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>TOP_SEARCH_RESULTS</name>
         <value>
           <integer>5</integer>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>MIN_LENGTH</name>
-        <value>
-          <integer>25</integer>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

@@ -20,7 +20,7 @@ import edu.cmu.lti.qalab.types.TestDocument;
 import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.cmu.lti.qalab.utils.Utils;
 
-public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase {
+public class AnswerChoiceQuerySimilarityScorer extends JCasAnnotator_ImplBase {
 
 	int K_CANDIDATES = 5;
 
@@ -64,94 +64,71 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 				ArrayList<VerbPhrase> candSentVerbs = Utils.fromFSListToCollection(
 						candSent.getSentence().getVerbPhraseList(), VerbPhrase.class);
 				
+				ArrayList<NounPhrase> questionNouns = Utils.fromFSListToCollection(question.getNounList(),NounPhrase.class);
+	      ArrayList<NER> questionNers = Utils.fromFSListToCollection(question.getNerList(), NER.class);
+	      ArrayList<VerbPhrase> questionVerbs = Utils.fromFSListToCollection(question.getVerbList(), VerbPhrase.class);
+	      
 				//get NamedEntities
 				
 				ArrayList<CandidateAnswer> candAnsList = new ArrayList<CandidateAnswer>();
 				
 				
 				for (int j = 0; j < choiceList.size(); j++) {
-
-					Answer answer = choiceList.get(j);
-					ArrayList<NounPhrase> choiceNouns = Utils
-							.fromFSListToCollection(answer.getNounPhraseList(),
-									NounPhrase.class);
-					ArrayList<NER> choiceNERs = Utils.fromFSListToCollection(
-							answer.getNerList(), NER.class);
-					ArrayList<VerbPhrase> choiceVerbs = Utils
-							.fromFSListToCollection(answer.getVerbPhraseList(),
-									VerbPhrase.class);
+				  Answer answer = choiceList.get(j);
 					int nnMatch = 0;
 					int nerMatch = 0;
 					int vbMatch = 0;
-					for (int k = 0; k < candSentNouns.size(); k++) {
-						// If candidate Noun Phrase contains answer NER
-						for (int l = 0; l < choiceNERs.size(); l++) {
-							if (candSentNouns.get(k).getText()
-									.contains(choiceNERs.get(l).getText()) || computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNERs.get(l).getText())<=1 ) {
+					for (int k = 0; k < questionNouns.size(); k++) {
+						for (int l = 0; l < candSentNers.size(); l++) {
+							if (AnswerChoiceQuerySimilarityScorer.match(questionNouns.get(k).getText(),candSentNers.get(l).getText()) ) {
 								nerMatch++;
 							}
 						}
-						// If candidate Noun phrase contains answer Nouns
-						for (int l = 0; l < choiceNouns.size(); l++) {
-							if (candSentNouns.get(k).getText()
-									.contains(choiceNouns.get(l).getText()) ) {
-								//|| computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNouns.get(l).getText())<=1)
+						for (int l = 0; l < candSentNouns.size(); l++) {
+							if (AnswerChoiceQuerySimilarityScorer.match(questionNouns.get(k).getText(),candSentNouns.get(l).getText()) ) {
 								nnMatch++;
-								
 							}
 						}
 					}
-					// Same as above, for NERs
-					for (int k = 0; k < candSentNers.size(); k++) {
-						for (int l = 0; l < choiceNERs.size(); l++) {
-							if (candSentNers.get(k).getText()
-									.contains(choiceNERs.get(l).getText()) ) {
-								//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
+					for (int k = 0; k < questionNers.size(); k++) {
+						for (int l = 0; l < candSentNers.size(); l++) {
+							if (AnswerChoiceQuerySimilarityScorer.match(questionNers.get(k).getText(),candSentNers.get(l).getText()) ) {
 								nerMatch++;
 							}
 						}
-						for (int l = 0; l < choiceNouns.size(); l++) {
-							if (candSentNers.get(k).getText()
-									.contains(choiceNouns.get(l).getText()) ) {
-								nnMatch++;//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNouns.get(l).getText())<=1 
+						for (int l = 0; l < candSentNouns.size(); l++) {
+							if (AnswerChoiceQuerySimilarityScorer.match(questionNers.get(k).getText(),candSentNouns.get(l).getText()) ) {
+								nnMatch++; 
 							}
 						}
-
 					}
-
-					// Same as above, for Verbs
-					for (int k = 0; k < candSentVerbs.size(); k++) {
-						for (int l = 0; l < choiceVerbs.size(); l++) {
-							if (candSentVerbs.get(k).getText()
-									.contains(choiceVerbs.get(l).getText()) ) {
-								//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
+					for (int k = 0; k < questionVerbs.size(); k++) {
+						for (int l = 0; l < candSentVerbs.size(); l++) {
+							if (AnswerChoiceQuerySimilarityScorer.match(questionVerbs.get(k).getText(),candSentVerbs.get(l).getText()) ) {
 								vbMatch++;
 							}
 						}
-
 					}
-					// Add scores of matches of Answer NER with NN
-					//nerMatch=nerMatch/(candSentNouns.size()+candSentNers.size());
-					//nnMatch=nnMatch/(candSentNouns.size()+candSentNers.size());
 					
 					nnMatch+=nerMatch+vbMatch;
-					System.out.println(choiceList.get(j).getText() + "\t"
-							+ nnMatch);
 					CandidateAnswer candAnswer = null;
 					if (candSent.getCandAnswerList() == null) {
 						candAnswer = new CandidateAnswer(aJCas);
 					} else {
 						candAnswer = Utils.fromFSListToCollection(
 								candSent.getCandAnswerList(),
-								CandidateAnswer.class).get(j);// new
-																// CandidateAnswer(aJCas);;
+								CandidateAnswer.class).get(j);
 
 					}
 					candAnswer.setText(answer.getText());
 					candAnswer.setQId(answer.getQuestionId());
 					candAnswer.setChoiceIndex(j);
-					candAnswer.setSimilarityScore(nnMatch);
-					//candAnswer.sets
+					double totalNum=questionNouns.size()+questionNers.size()+questionVerbs.size();
+					if(totalNum!=0){
+					  candAnswer.setQuerySimilarityScore(nnMatch/totalNum);
+					}else{
+					  candAnswer.setQuerySimilarityScore(0.0);
+					}
 					candAnsList.add(candAnswer);
 				}
 
@@ -196,5 +173,14 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 		 return Math.min(Math.min(i, j), k);
 		
 	}
+	
+	private static boolean match(String a, String b){
+	  if(a.contains(b)||b.contains(a)){
+	    return true;
+	  }else{
+	    return false;
+	  }
+	}
+	
 
 }

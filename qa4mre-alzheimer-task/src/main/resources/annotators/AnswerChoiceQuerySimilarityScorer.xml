@@ -2,17 +2,17 @@
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
   <primitive>true</primitive>
-  <annotatorImplementationName>edu.cmu.lti.deiis.hw5.annotators.NEAnnotator</annotatorImplementationName>
+  <annotatorImplementationName>edu.cmu.lti.deiis.hw5.answer_ranking.AnswerChoiceQuerySimilarityScorer</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>NEAnnotatorDescriptor</name>
+    <name>AnswerChoiceCandAnsSimilarityScorerDescriptor</name>
     <description/>
     <version>1.0</version>
     <vendor/>
-    <!-- <configurationParameters>
+    <configurationParameters>
       <configurationParameter>
-        <name>NOISE_THRESHOLD</name>
-        <description>noise score</description>
-        <type>String</type>
+        <name>K_CANDIDATES</name>
+        <description>K candidates</description>
+        <type>Integer</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
@@ -20,14 +20,13 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>NOISE_THRESHOLD</name>
+        <name>K_CANDIDATES</name>
         <value>
-          <string>0.20</string>
+          <integer>20</integer>
         </value>
-      </nameValuePair>     
+      </nameValuePair>
     </configurationParameterSettings>
-     -->
-    
+        
     <typeSystemDescription/>
     <typePriorities/>
     <fsIndexCollection/>
