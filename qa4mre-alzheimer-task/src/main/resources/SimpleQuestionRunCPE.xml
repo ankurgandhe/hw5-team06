@@ -39,6 +39,9 @@
   <delegateAnalysisEngine key="QuestionCategoryAnnotator">
       <import name="annotators.QuestionCategoryAnnotator"/>
     </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="QuestionPhraseAnnotator">
+      <import name="annotators.QuestionPhraseAnnotator"/>
+    </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
     <name>CpeQuestionDescriptor</name>
@@ -52,12 +55,12 @@
         <node>QuestionCandSentSimilarityMatcher</node>
         <!-- <node>QuestionCandSentSynonymMatcher</node>-->
         <!-- <node>QuestionCandSentDependencyMatcher</node>-->
-        <node>QuestionCategoryAnnotator</node>
+        <node>AnswerChoiceCandAnsSimilarityScorer</node>
         <!-- <node>AnswerChoiceCandAnsSynonymScorer</node>-->
         <!--<node>AnswerChoiceCandAnsPMIScorer</node>-->
-        <node>AnswerChoiceCandAnsSimilarityScorer</node>
-      <node>AnswerChoiceCandAnsPMIScorer</node>
+        <node>AnswerChoiceCandAnsPMIScorer</node>
       <node>AnswerSelectionByKCandVoting</node>
+      <node>QuestionPhraseAnnotator</node>
         </fixedFlow>
     </flowConstraints>
     <typePriorities/>
