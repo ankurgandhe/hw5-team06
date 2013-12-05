@@ -73,7 +73,10 @@ if(false)
 		return set;
 
 	}
-	public static boolean getWordHypernyms(String word, Set<String> set, String req, Set<String> checked) {
+	public static boolean getWordHypernyms(String word, Set<String> set, String req, Set<String> checked, int depth) {
+	//	if(depth==0)
+		//return false;
+		
 		set = checkSet(set);	
 		checked = checkSet(checked);	
 		//checked
@@ -91,6 +94,8 @@ if(false)
 		{System.out.println("returned false for "+word);
 			return false;
 		}
+		
+		checked.add(word);
 		String[] multi=word.split(" ");
 		for(String currWord:multi)
 		{
@@ -131,7 +136,7 @@ if(false)
 					{String	words=queue.poll();
 						if(!checkedWordset.contains(words))
 					{	
-						if(getWordHypernyms(words,set,req,checked))
+						if(getWordHypernyms(words,set,req,checked,depth-1))
 							return true;
 					}
 					}
@@ -325,7 +330,7 @@ if(false)
 		}
 		
 */		
-		boolean bl = getWordHypernyms("spider", null,"insect",null);
+		boolean bl = getWordHypernyms("spider", null,"kutta",null,10);
 		
 		System.out.println(bl);
 	}
