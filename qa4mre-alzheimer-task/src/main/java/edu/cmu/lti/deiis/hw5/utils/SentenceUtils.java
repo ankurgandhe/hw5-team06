@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.uima.jcas.cas.FSList;
 
+import edu.cmu.lti.deiis.hw5.constants.WordNetConstants;
 import edu.cmu.lti.qalab.types.Answer;
 import edu.cmu.lti.qalab.types.CandidateAnswer;
 import edu.cmu.lti.qalab.types.NounPhrase;
@@ -21,26 +22,23 @@ public class SentenceUtils
 		{
 		String nptext=np.getText()	;
 
-		if(WordNetAPI.getWordHypernyms(nptext, null, cat, null))
+		if(WordNetAPI.getWordHypernyms(nptext, null, cat, null,WordNetConstants.WORDNET_HYPERNYM_DEPTH))
 			return true;
 
-		else{String terms[]=nptext.split(" ");
+		if(checkNPList(nptext,cat))
+				return true;
+			
 
-		for(String term :terms)
-		{
-			if(WordNetAPI.getWordHypernyms(term, null, cat, null))
-				return true;	
-		}
-
-		}
+		
 
 		}
 		return false;}
 
 	
 	
+	
 	static boolean checkNPList(
-			String text, String cat)
+		String text, String cat)
 	{
 		String[] terms=text.split(" ");
 		
@@ -48,7 +46,7 @@ public class SentenceUtils
 		{
 		String nptext=np;
 
-		if(WordNetAPI.getWordHypernyms(nptext, null, cat, null))
+		if(WordNetAPI.getWordHypernyms(nptext, null, cat, null,WordNetConstants.WORDNET_HYPERNYM_DEPTH))
 			return true;
 
 		}
