@@ -74,7 +74,7 @@ public class PhraseAnnotator extends JCasAnnotator_ImplBase {
 			if(pos.startsWith("NN")){
         nounPhrase+=word+" ";
         nounFlag = true;
-      }else if (pos.startsWith("JJ") || pos.startsWith("CD")){
+      }else if ( ( pos.startsWith("JJ") || pos.startsWith("CD")) && !nounFlag){
         nounPhrase+=word+" ";
       }else{
         nounPhrase=nounPhrase.trim();

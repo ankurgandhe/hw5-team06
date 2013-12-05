@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.cmu.lti.deiis.hw5.constants.DistributionalSimilarityConstants;
+
 public class DistributionalSimilarity {
 
 	public Map<String, double[]> wordVectorMap;
@@ -19,7 +21,7 @@ public class DistributionalSimilarity {
 	
 	public static DistributionalSimilarity getInstance(){
 		
-		String filename = "model\\alzheimer.tok.model.320";
+		String filename = DistributionalSimilarityConstants.DIR_PATH;
 		if (DS==null){
 			DS = new DistributionalSimilarity(filename);
 			
@@ -197,9 +199,9 @@ public class DistributionalSimilarity {
 				
 	}
 	public static void main(String[] args) throws Exception {
-		String filename = "C:\\Users\\gandhe\\Dropbox\\Semester 3\\Software_Engineering\\assign5\\background\\word2vec\\alzheimer.tok.model.320";
+		String filename = DistributionalSimilarityConstants.DIR_PATH;
 		DistributionalSimilarity DS = new DistributionalSimilarity(filename);
 		
-		//DS.readModel(filename);
+		DS.readModel(filename);
 	}
 }
