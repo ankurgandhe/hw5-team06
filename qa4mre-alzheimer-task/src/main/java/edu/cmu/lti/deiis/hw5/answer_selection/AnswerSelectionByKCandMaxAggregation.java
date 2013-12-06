@@ -89,6 +89,7 @@ public class AnswerSelectionByKCandMaxAggregation extends
 								+ 2*candAns.getQuerySimilarityScore()
 								+ 3*candSent.getRelevanceScore()
 								+ 1*candAns.getVectorSimilarityScore()
+								+0.33*candAns.getSynonymScore()
 								+ candAns.getPMIScore();
 						if (answer.equals("AD")){
 							totalScore=candAns.getQuerySimilarityScore()

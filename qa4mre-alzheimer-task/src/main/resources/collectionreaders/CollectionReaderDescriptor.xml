@@ -20,7 +20,8 @@
       <nameValuePair>
         <name>INPUT_DIR</name>
         <value>
-          <string>data/QAMRE11791/</string>
+          <!--  <string>data/QAMRE11791/</string>-->
+          <string>data/12-test-alzheimer/</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

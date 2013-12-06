@@ -12,8 +12,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Dec 05 21:06:41 EST 2013
- * XML source: C:/Users/gandhe/git/hw5-team06-task/qa4mre-base/src/main/resources/TypeSystemDescriptor.xml
+ * Updated by JCasGen Thu Dec 05 21:23:34 EST 2013
+ * XML source: C:/Users/Mario/Git/hw5-team06/qa4mre-base/src/main/resources/TypeSystemDescriptor.xml
  * @generated */
 public class Question extends Annotation {
   /** @generated
@@ -225,6 +225,24 @@ Different categories of questions require different answers (proper noun, common
     if (Question_Type.featOkTst && ((Question_Type)jcasType).casFeat_askingFor == null)
       jcasType.jcas.throwFeatMissing("askingFor", "edu.cmu.lti.qalab.types.Question");
     jcasType.ll_cas.ll_setStringValue(addr, ((Question_Type)jcasType).casFeatCode_askingFor, v);}    
+   
+    
+  //*--------------*
+  //* Feature: askingForTokens
+
+  /** getter for askingForTokens - gets List of tokens in the askingFor phrase
+   * @generated */
+  public FSList getAskingForTokens() {
+    if (Question_Type.featOkTst && ((Question_Type)jcasType).casFeat_askingForTokens == null)
+      jcasType.jcas.throwFeatMissing("askingForTokens", "edu.cmu.lti.qalab.types.Question");
+    return (FSList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Question_Type)jcasType).casFeatCode_askingForTokens)));}
+    
+  /** setter for askingForTokens - sets List of tokens in the askingFor phrase 
+   * @generated */
+  public void setAskingForTokens(FSList v) {
+    if (Question_Type.featOkTst && ((Question_Type)jcasType).casFeat_askingForTokens == null)
+      jcasType.jcas.throwFeatMissing("askingForTokens", "edu.cmu.lti.qalab.types.Question");
+    jcasType.ll_cas.ll_setRefValue(addr, ((Question_Type)jcasType).casFeatCode_askingForTokens, jcasType.ll_cas.ll_getFSRef(v));}    
   }
 
     
