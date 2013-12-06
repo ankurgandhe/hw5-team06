@@ -77,7 +77,7 @@ try {
 		set = getVerbHyponyms(word, set);
 		set = getAdjectiveHyponyms(word, set);
 		set = getAdverbHyponyms(word, set);
-//if(false)
+if(false)
 		set=addStringArray(set,ds.getInstance().testModel(word));
 		cache.put(word, set);
 		return set;

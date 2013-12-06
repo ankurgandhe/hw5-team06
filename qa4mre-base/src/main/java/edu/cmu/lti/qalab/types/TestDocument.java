@@ -1,6 +1,6 @@
 
 
-/* First created by JCasGen Thu Dec 05 20:19:15 EST 2013 */
+/* First created by JCasGen Thu Dec 05 21:06:40 EST 2013 */
 package edu.cmu.lti.qalab.types;
 
 import org.apache.uima.jcas.JCas; 
@@ -11,7 +11,7 @@ import org.apache.uima.jcas.cas.FSList;
 
 
 /** 
- * Updated by JCasGen Thu Dec 05 20:20:08 EST 2013
+ * Updated by JCasGen Thu Dec 05 21:06:41 EST 2013
  * XML source: C:/Users/gandhe/git/hw5-team06-task/qa4mre-base/src/main/resources/TypeSystemDescriptor.xml
  * @generated */
 public class TestDocument extends SourceDocument {
