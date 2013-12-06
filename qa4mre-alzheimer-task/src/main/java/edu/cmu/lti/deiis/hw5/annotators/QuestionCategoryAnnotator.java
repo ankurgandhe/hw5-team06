@@ -46,16 +46,6 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			//get tokens from question
 			ArrayList<Token>tokenList= Utils.getTokenListFromQuestion(question);
 			
-			//get dependencies and noun phrases and convert to ArrayList
-			FSList depFSList = question.getDependencies();
-      ArrayList<Dependency> depList = new ArrayList<Dependency>();
-      depList = Utils.fromFSListToCollection(depFSList,Dependency.class);
-      
-      FSList nounFSList = question.getNounList();
-      ArrayList<NounPhrase> nounList = new ArrayList<NounPhrase>();
-      nounList = Utils.fromFSListToCollection(nounFSList,NounPhrase.class);
-      //if (nounList.size()<1){System.out.println("Why is this empty?");}
-			
       //get question text
 			String qText = question.getText();
 			
@@ -73,7 +63,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
       Matcher howmanyMatch = Pattern.compile("[Hh]ow many").matcher(qText);
       Matcher howmuchMatch = Pattern.compile("[Hh]ow much").matcher(qText);
       
-    //check for question words (i.e. wh-words, how many, how much, etc.)
+      //check for question words (i.e. wh-words, how many, how much, etc.)
       whWords.add(whoMatch.find());
       whWords.add(whatMatch.find());
       whWords.add(whenMatch.find());
@@ -84,11 +74,11 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
       whWords.add(howmanyMatch.find());
       whWords.add(howmuchMatch.find());
       
-      //check if there are multiple wh-expressions in the question
+      //get number of wh-expressions in the question
       int numMatch = 0;
       for (int j=0;j<whWords.size();j++){numMatch+= whWords.get(j)? 1 : 0;}
       
-      //set category if the question begins with the appropriate wh/how expression
+      //set category accordingly if the question contains only one wh-word
       if (numMatch < 2){
         if (whWords.get(0)){question.setCategory("who");}
         else if (whWords.get(1)){question.setCategory("what");}
@@ -101,6 +91,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
         else if (whWords.get(8)){question.setCategory("howmuch");}
         else {question.setCategory("other");}
       } else {
+        //else only set the category to the one that's POS-tagged appropriately
         question.setCategory("other");
         Boolean whFound = false;
         for(int j=0;j<tokenList.size();j++){
@@ -123,6 +114,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
             }
             else if (word.startsWith("which")){question.setCategory("which");whFound=true;}
             else {question.setCategory("other");}
+            //but maybe we can't resolve the conflict 
           }else if (tPos.startsWith("W") && whFound){question.setCategory("conflict");}
         }
       }
@@ -130,14 +122,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			//question.addToIndexes();
 			questionList.set(i, question);
 			
-			/*System.out.println("Question " + (i+1) + ": " + question.getText());
-			System.out.print("Category: " + question.getCategory());
-			if (numMatch>1) {
-			  System.out.println("\t\t   who    what  when   where   why    how    which howmany howmuch");
-	      System.out.println("\t\t\t" + numMatch + " " + whWords);  
-			} else {System.out.println();}
-			System.out.println();*/
-			
+			//SKT words are like in "what TYPE of hormone" or "what KIND of dog"
       String skt = "sort,kind,type,brand,category,class,kin,manner,species,variety,sorts,kinds,types,brands,categories,classes,manners,varieties";
 			Set<String> sktwords = SetUtil.addStringArray(null, skt.split(","));
 			
@@ -161,6 +146,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			    if (tPos.equals("WDT")){
 			      whFlag = true;
 			    } else if (whFlag) {
+			      //if the question is like "What is used for __" then we don't have a specific askingFor
 			      if (tPos.startsWith("VB") && !copula && !nounFlag){
 			        break;
 			      }else if (tPos.startsWith("NN")){
@@ -171,6 +157,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
               asking+=word+" ";
               askingTokens.add(t);
             }else if (word.equals("of") && j>0){
+              //we eliminate the SKT words if it asks for "What type of hormone?" or similar
               if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
                 asking = "";
                 askingTokens.clear();
@@ -212,6 +199,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
           String tPos = t.getPos();
           String word = t.getText();
           if (tPos.equals("WRB")){
+            //found the how word, j++ to skip over "many"
             howFlag = true;
             j++;
           } else if (howFlag) {
@@ -222,10 +210,21 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
             }else if (tPos.startsWith("JJ") && !nounFlag){
               asking+=word+" ";
               askingTokens.add(t);
-            }else if (word.equals("of")){
-              asking = "";
-              askingTokens.clear();
-              nounFlag = false;
+            }else if (word.equals("of") && j>0){
+              //eliminate SKT words like in "How many types of amino acids are there?"
+              if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
+                asking = "";
+                askingTokens.clear();
+                nounFlag = false;
+              } else {
+                asking=asking.trim();
+                if(!asking.equals("") && nounFlag){
+                  asking=asking.trim();
+                  question.setAskingFor(asking);
+                  question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                  break;
+                } else if (!nounFlag) {asking="";askingTokens.clear();}
+              }
             }else{
               asking=asking.trim();
               if(!asking.equals("") && nounFlag){
