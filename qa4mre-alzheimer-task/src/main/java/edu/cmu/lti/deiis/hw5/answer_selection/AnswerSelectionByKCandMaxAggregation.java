@@ -37,6 +37,7 @@ public class AnswerSelectionByKCandMaxAggregation extends
 	}
 
 	@Override
+	
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		TestDocument testDoc = Utils.getTestDocumentFromCAS(aJCas);
 		ArrayList<QuestionAnswerSet> qaSet = Utils.fromFSListToCollection(
@@ -178,7 +179,7 @@ public class AnswerSelectionByKCandMaxAggregation extends
 		return bestAns;
 	}
 	public void destroy() {
-         System.out.println("Average c@1:" + total_cat1 /
+         System.out.println("Using Max Aggegation. Average c@1:" + total_cat1 /
          nDocs);
 }
 

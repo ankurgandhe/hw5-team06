@@ -61,7 +61,8 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
       }
 
       HashMap<String, Double> hshAnswer = new HashMap<String, Double>();
-
+      HashMap<String, Double> hshAnswerScore = new HashMap<String, Double>();
+      
       for (int c = 0; c < topK; c++) {
 
         CandidateSentence candSent = candSentList.get(c);
@@ -70,6 +71,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
                 candSent.getCandAnswerList(), CandidateAnswer.class);
         String selectedAnswer = "";
         double maxScore = Double.NEGATIVE_INFINITY;
+        double maxRelevanceScore=Double.NEGATIVE_INFINITY;
         for (int j = 0; j < candAnswerList.size(); j++) {
 
           CandidateAnswer candAns = candAnswerList.get(j);
@@ -81,6 +83,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 					//+ 3*candSent.getRelevanceScore()
 					+ 3*candAns.getVectorSimilarityScore()
 					+ candAns.getPMIScore();
+          
 			if (answer.equals("AD")){
 				totalScore=candAns.getQuerySimilarityScore()
 						+ candSent.getRelevanceScore()
@@ -90,21 +93,33 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
           //double totalScore = 0.0*candAns.getSimilarityScore() + 0.0*candAns.getSynonymScore()
                   //+ 2*candAns.getPMIScore() + 2.5*candAns.getVectorSimilarityScore()+  0.5*choiceList.get(candAns.getChoiceIndex()).getAnswerScore();
           //System.out.println(totalScore);
+          if (answer.toLowerCase().equals("none of the above"))
+        		  continue;
           if (totalScore > maxScore) {
             maxScore = totalScore;
             selectedAnswer = answer;
+            if ( candAns.getQuerySimilarityScore() > maxRelevanceScore){
+            	maxRelevanceScore =candAns.getQuerySimilarityScore(); 
+            }
           }
+          
         }
         Double existingVal = hshAnswer.get(selectedAnswer);
         if (existingVal == null) {
           existingVal = new Double(0.0);
         }
         hshAnswer.put(selectedAnswer, existingVal + 1.0);
+        
+        existingVal = hshAnswerScore.get(selectedAnswer);
+        if (existingVal == null) {
+          existingVal = new Double(0.0);
+        }
+        hshAnswerScore.put(selectedAnswer, existingVal + maxRelevanceScore);
       }
 
       String bestChoice = null;
       try {
-        bestChoice = findBestChoice(hshAnswer);
+        bestChoice = findBestChoice(hshAnswer,hshAnswerScore);
 
       } catch (Exception e) {
         e.printStackTrace();
@@ -137,23 +152,29 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 
   }
 
-  public String findBestChoice(HashMap<String, Double> hshAnswer) throws Exception {
+  public String findBestChoice(HashMap<String, Double> hshAnswer,HashMap<String,Double> hshAnswerScore) throws Exception {
 
     Iterator<String> it = hshAnswer.keySet().iterator();
     String bestAns = null;
     double maxScore = 0;
+    double maxScoreScore=0;
     System.out.println("Aggregated counts; ");
     while (it.hasNext()) {
       String key = it.next();
       Double val = hshAnswer.get(key);
-      System.out.println(key + "\t" + key + "\t" + val);
+      Double score = hshAnswerScore.get(key);
+      System.out.println(key + "\t" + key + "\t" + val+"\t"+score);
       if (val > maxScore) {
         maxScore = val;
         bestAns = key;
+        maxScoreScore=score;
       }
-
+      
     }
-
+    /*if (maxScoreScore/maxScore < 0.5){
+  	  System.out.println("None of the above" + "\t" + "NOTA"+ "\t" + maxScoreScore/maxScore);
+  	  bestAns="None of the above";
+    }*/
     return bestAns;
   }
   public void destroy() {
