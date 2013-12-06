@@ -82,9 +82,9 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 					ArrayList<VerbPhrase> choiceVerbs = Utils
 							.fromFSListToCollection(answer.getVerbPhraseList(),
 									VerbPhrase.class);
-					//Utils.printNounList(choiceNouns);
-					//Utils.printVerbList(choiceVerbs);
-					//Utils.printNerList(choiceNERs);
+					Utils.printNounList(choiceNouns);
+					Utils.printVerbList(choiceVerbs);
+					Utils.printNerList(choiceNERs);
 					double nnMatch = 0;
 					double nerMatch = 0;
 					double vbMatch = 0;

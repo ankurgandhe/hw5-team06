@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Thu Dec 05 20:19:15 EST 2013 */
+/* First created by JCasGen Thu Dec 05 21:06:40 EST 2013 */
 package edu.cmu.lti.qalab.types;
 
 import org.apache.uima.jcas.JCas;
@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Dec 05 20:20:08 EST 2013
+ * Updated by JCasGen Thu Dec 05 21:06:41 EST 2013
  * @generated */
 public class SourceDocument_Type extends Annotation_Type {
   /** @generated */

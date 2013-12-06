@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Thu Dec 05 20:19:15 EST 2013 */
+/* First created by JCasGen Thu Dec 05 21:06:40 EST 2013 */
 package edu.cmu.lti.qalab.types;
 
 import org.apache.uima.jcas.JCas;
@@ -13,7 +13,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Thu Dec 05 20:20:08 EST 2013
+ * Updated by JCasGen Thu Dec 05 21:06:41 EST 2013
  * @generated */
 public class TestDocument_Type extends SourceDocument_Type {
   /** @generated */
