@@ -1,8 +1,14 @@
 package edu.cmu.lti.qalab.utils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +36,8 @@ import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.stanford.nlp.trees.semgraph.SemanticGraphEdge;
 
 public class Utils {
+	
+	static Set<String> stopWordSet=new HashSet<String>(); 
 	/**
 	 * Creates FeatureStructure List from sentenceList
 	 * 
@@ -574,5 +582,54 @@ public class Utils {
 
 	}
 
+	public static void printNounList(ArrayList<NounPhrase> arr){
+		System.out.print(";noun:");
+		for (NounPhrase text: arr){
+			System.out.print(text.getText() +",");
+		}
+	}
 	
+	public static void printVerbList(ArrayList<VerbPhrase> arr){
+		System.out.print(";verb:");
+		for (VerbPhrase text: arr){
+			System.out.print(text.getText() +",");
+		}
+	}
+	public static void printNerList(ArrayList<NER> arr){
+		System.out.print(";verb:");
+		for (NER text: arr){
+			System.out.print(text.getText() +",");
+		}
+	}
+	public static ArrayList<String> readStopWords(String stopWordsfile) throws IOException {
+		ArrayList<String> stopWords = new ArrayList<String>();
+
+		BufferedReader br = new BufferedReader(new FileReader(
+				stopWordsfile));
+		try {
+			String line = br.readLine();
+			while (line != null) {
+				stopWords.add(line);
+				line = br.readLine();
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return stopWords;
+	}
+
+	public static Set<String> getStopWordsSet(String stopWordsfile) throws IOException {
+
+		
+		if(stopWordSet.size()==0)
+		{	List<String>  list=readStopWords(stopWordsfile);
+		
+		for(String word:list)
+		{stopWordSet.add(word);}
+		
+		}
+		return stopWordSet;
+	}
 }
