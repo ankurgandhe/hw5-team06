@@ -38,7 +38,7 @@ public class OutputRunCasConsumer extends CasConsumer_ImplBase {
 	int unanswered = 0;
 	int total = 0;
 	double cAt1 = 0.0;
-
+	static int testId=1;
 	// if is_test == true, don't show the c@1 measure on the screen because we don't know the gold standard answer.
 	boolean IS_TEST = false;
 
@@ -150,7 +150,8 @@ public class OutputRunCasConsumer extends CasConsumer_ImplBase {
 
 		FSIterator<Annotation> it = jcas.getAnnotationIndex().iterator();
 		StringBuffer sb = new StringBuffer();
-		int testId=1;
+		q_id=-1;
+		//out.write(String.format("this is a surpise\n"));
 		while (it.hasNext()) {
 			Annotation an = (it.next());
 			// System.out.println(an);
@@ -161,8 +162,8 @@ public class OutputRunCasConsumer extends CasConsumer_ImplBase {
 				testId++;
 				//TBD: get reading-test id, such as r_id = doc.getReadingTestId()
 				System.out.println(doc.getReadingTestId());
-				out.write(String.format("\t<reading-test r_id=\"%d\">\n", Integer.parseInt(doc.getReadingTestId())));
-				
+				out.write(String.format("\t<reading-test r_id=\"%d\">\n", Integer.parseInt(doc.getReadingTestId())));				  
+				//out.write(String.format("\t<reading-test r_id=\"%d\">\n", testId));
 				FSList list = doc.getQaList();
 				boolean answered = false;
 				int selectedAnswerId = -1;
@@ -177,7 +178,8 @@ public class OutputRunCasConsumer extends CasConsumer_ImplBase {
 					//DEBUG
 					//System.out.println(q.getId());
 					
-					q_id = Integer.parseInt(q.getId());
+					//q_id = Integer.parseInt(q.getId());
+					q_id++;
 					// DEBUG System.out.println("Question: " + q.getText());
 					FSList aList = qas.getAnswerList();
 					while (aList instanceof NonEmptyFSList) { // every answer
@@ -213,6 +215,7 @@ public class OutputRunCasConsumer extends CasConsumer_ImplBase {
 					list = ((NonEmptyFSList) list).getTail();
 				}
 				out.write("\t</reading-test>\n");
+				
 			}
 		}
 
