@@ -46,15 +46,15 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			//get tokens from question
 			ArrayList<Token>tokenList= Utils.getTokenListFromQuestion(question);
 			
+			//decided to do noun phrase search manually, since this has slightly different requirements
 			//get dependencies and noun phrases and convert to ArrayList
-			FSList depFSList = question.getDependencies();
+			/*FSList depFSList = question.getDependencies();
       ArrayList<Dependency> depList = new ArrayList<Dependency>();
       depList = Utils.fromFSListToCollection(depFSList,Dependency.class);
       
       FSList nounFSList = question.getNounList();
       ArrayList<NounPhrase> nounList = new ArrayList<NounPhrase>();
-      nounList = Utils.fromFSListToCollection(nounFSList,NounPhrase.class);
-      //if (nounList.size()<1){System.out.println("Why is this empty?");}
+      nounList = Utils.fromFSListToCollection(nounFSList,NounPhrase.class);*/
 			
       //get question text
 			String qText = question.getText();
@@ -84,12 +84,12 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
       whWords.add(howmanyMatch.find());
       whWords.add(howmuchMatch.find());
       
-      //check if there are multiple wh-expressions in the question
+      //get number of wh-expressions in the question
       int numMatch = 0;
       for (int j=0;j<whWords.size();j++){numMatch+= whWords.get(j)? 1 : 0;}
       
-      //set category if the question begins with the appropriate wh/how expression
       if (numMatch < 2){
+        //if there's only one or no wh-word, set the category accordingly
         if (whWords.get(0)){question.setCategory("who");}
         else if (whWords.get(1)){question.setCategory("what");}
         else if (whWords.get(2)){question.setCategory("when");}
@@ -101,6 +101,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
         else if (whWords.get(8)){question.setCategory("howmuch");}
         else {question.setCategory("other");}
       } else {
+        //if there is more than one wh-word, only set the category for the one that has a W POS tag
         question.setCategory("other");
         Boolean whFound = false;
         for(int j=0;j<tokenList.size();j++){
@@ -138,6 +139,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			} else {System.out.println();}
 			System.out.println();*/
 			
+			//SKT words are used in constructions like "What TYPE OF hormone is that?"
       String skt = "sort,kind,type,brand,category,class,kin,manner,species,variety,sorts,kinds,types,brands,categories,classes,manners,varieties";
 			Set<String> sktwords = SetUtil.addStringArray(null, skt.split(","));
 			
@@ -161,6 +163,8 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			    if (tPos.equals("WDT")){
 			      whFlag = true;
 			    } else if (whFlag) {
+			      //if the wh-word is followed by the copula, like in "What is used for blah?"
+			      //then the question is not asking for something specific that can be identified
 			      if (tPos.startsWith("VB") && !copula && !nounFlag){
 			        break;
 			      }else if (tPos.startsWith("NN")){
@@ -171,11 +175,15 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
               asking+=word+" ";
               askingTokens.add(t);
             }else if (word.equals("of") && j>0){
+              //if the question asks for "What type of X?" then we want X, not "type"
               if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
+                //so if the previous token is an SKT word, clear askingFor and keep looking
                 asking = "";
                 askingTokens.clear();
                 nounFlag = false;
               } else {
+                //if it was not an SKT word, like in "Which color of the rainbow"
+                //then stop and use the noun phrase we found so far
                 asking=asking.trim();
                 if(!asking.equals("") && nounFlag){
                   asking=asking.trim();
@@ -212,6 +220,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
           String tPos = t.getPos();
           String word = t.getText();
           if (tPos.equals("WRB")){
+            //we found the how, j++ to skip over many
             howFlag = true;
             j++;
           } else if (howFlag) {
@@ -222,10 +231,24 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
             }else if (tPos.startsWith("JJ") && !nounFlag){
               asking+=word+" ";
               askingTokens.add(t);
-            }else if (word.equals("of")){
-              asking = "";
-              askingTokens.clear();
-              nounFlag = false;
+            }else if (word.equals("of") && j>0){
+              //if the question asks for "How many types of X?" then we want X, not "types"
+              if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
+                //so if the previous token is an SKT word, clear askingFor and keep looking
+                asking = "";
+                askingTokens.clear();
+                nounFlag = false;
+              } else {
+                //if it was not an SKT word, like in "How many colors of the rainbow"
+                //then stop and use the noun phrase we found so far
+                asking=asking.trim();
+                if(!asking.equals("") && nounFlag){
+                  asking=asking.trim();
+                  question.setAskingFor(asking);
+                  question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                  break;
+                } else if (!nounFlag) {asking="";askingTokens.clear();}
+              }
             }else{
               asking=asking.trim();
               if(!asking.equals("") && nounFlag){
