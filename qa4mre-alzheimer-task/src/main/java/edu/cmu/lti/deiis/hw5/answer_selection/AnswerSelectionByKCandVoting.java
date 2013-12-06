@@ -79,7 +79,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 					//+ candAns.getQuerySimilarityScore()
 					+ 0.33*candAns.getSynonymScore()
 					//+ 3*candSent.getRelevanceScore()
-					+ 2.5*candAns.getVectorSimilarityScore()
+					+ 3*candAns.getVectorSimilarityScore()
 					+ candAns.getPMIScore();
 			if (answer.equals("AD")){
 				totalScore=candAns.getQuerySimilarityScore()
