@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Dec 05 21:06:41 EST 2013
+ * Updated by JCasGen Thu Dec 05 21:23:34 EST 2013
  * @generated */
 public class Synonym_Type extends Annotation_Type {
   /** @generated */

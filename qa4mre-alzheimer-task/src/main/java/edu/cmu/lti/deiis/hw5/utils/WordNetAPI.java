@@ -1,4 +1,3 @@
-
 package edu.cmu.lti.deiis.hw5.utils;
 
 import java.io.IOException;
@@ -27,32 +26,32 @@ import static edu.cmu.lti.deiis.hw5.utils.SetUtil.*;
 
 public class WordNetAPI {
 	private static Map<String, Set<String>> cache = null;
-	private static  DistributionalSimilarity ds=null;
-	private static   Set<String> wordNetStopWords=null;
-public static String stopLine="entity,abstraction,concept,idea,abstract entity,act,creation,activity,deed,unit,action,whole,thing,system,physical entity,material,set,collection,group,object,physical object,event";
+	private static DistributionalSimilarity ds = null;
+	private static Set<String> wordNetStopWords = null;
+	public static String stopLine = "entity,abstraction,concept,idea,abstract entity,act,creation,activity,deed,unit,action,whole,thing,system,physical entity,material,set,collection,group,object,physical object,event";
 	static {
 
 		cache = new HashMap<String, Set<String>>();
 		System.setProperty(WordNetConstants.DIR_ATT, WordNetConstants.DIR_PATH);
-		wordNetStopWords=checkSet(wordNetStopWords);
+		wordNetStopWords = checkSet(wordNetStopWords);
 
-		SetUtil.addStringArray(wordNetStopWords,(stopLine.split(",")));
-		System.out.println("<<<<<<<<<<<<<<<<###############################>>>>>>>>>>>>>>>>>>");
-		for(String string:wordNetStopWords)
-		{
+		SetUtil.addStringArray(wordNetStopWords, (stopLine.split(",")));
+		System.out
+				.println("<<<<<<<<<<<<<<<<###############################>>>>>>>>>>>>>>>>>>");
+		for (String string : wordNetStopWords) {
 			System.out.println(string);
 		}
-		System.out.println("<<<<<<<<<<<<<<<<###############################>>>>>>>>>>>>>>>>>>");
-		
-		
-//		 ds=new DistributionalSimilarity();
-	//	 String filename = "./model/alzheimer.tok.model.320";
+		System.out
+				.println("<<<<<<<<<<<<<<<<###############################>>>>>>>>>>>>>>>>>>");
+
+		// ds=new DistributionalSimilarity();
+		// String filename = "./model/alzheimer.tok.model.320";
 		// filename="/home/richie/git/hw5-skohli/hw5-team06/qa4mre-alzheimer-task/model/alzheimer.tok.model.320";
-		//	try {
-			//	ds.readModel(filename);			
-			///} catch (IOException e) {
-		//		e.printStackTrace();
-			//}
+		// try {
+		// ds.readModel(filename);
+		// /} catch (IOException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	public static Set<String> getHyponyms(String word, Set<String> set) {
@@ -60,106 +59,105 @@ public static String stopLine="entity,abstraction,concept,idea,abstract entity,a
 		Set<String> cachedWords = cache.get(word);
 		if (cachedWords != null)
 			return cachedWords;
-try {
-	if(Utils.getStopWordsSet(StopWords.infile).contains(word))
-	{return set;
+		try {
+			if (Utils.getStopWordsSet(StopWords.infile).contains(word)) {
+				return set;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-} catch (IOException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-		
+
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		// database.getBaseFormCandidates(word,SynsetType.ADJECTIVE );
-		
-	
+
 		set = getNounHyponyms(word, set);
 		set = getVerbHyponyms(word, set);
 		set = getAdjectiveHyponyms(word, set);
 		set = getAdverbHyponyms(word, set);
-if(false)
-		set=addStringArray(set,ds.getInstance().testModel(word));
+		if (false)
+			set = addStringArray(set, ds.getInstance().testModel(word));
 		cache.put(word, set);
 		return set;
 
 	}
-	public static boolean getWordHypernyms(String word, Set<String> set, String req, Set<String> checked, int depth) {
-	//	if(depth==0)
-		//return false;
-		
-		set = checkSet(set);	
-		checked = checkSet(checked);	
-		//checked
-		if(word.equals(req))
+
+	public static boolean getWordHypernyms(String word, Set<String> set,
+			String req, Set<String> checked, int depth) {
+		// if(depth==0)
+		// return false;
+
+		set = checkSet(set);
+		checked = checkSet(checked);
+		// checked
+		if (word.equals(req))
 			return true;
-		
-		//if(word.equalsIgnoreCase("entity")||word.equalsIgnoreCase("abstraction")||word.equalsIgnoreCase("concept")||word.equalsIgnoreCase("idea")||word.equalsIgnoreCase("abstract entity")||)
-		
-		if(wordNetStopWords.contains(word))
-		{System.out.println("returned false for "+word);
+
+		// if(word.equalsIgnoreCase("entity")||word.equalsIgnoreCase("abstraction")||word.equalsIgnoreCase("concept")||word.equalsIgnoreCase("idea")||word.equalsIgnoreCase("abstract entity")||)
+
+		if (wordNetStopWords.contains(word)) {
+			System.out.println("returned false for " + word);
 			return false;
 		}
 
-		if(checked.contains(word))
-		{System.out.println("returned false for "+word);
+		if (checked.contains(word)) {
+			System.out.println("returned false for " + word);
 			return false;
 		}
-		
+
 		checked.add(word);
-		String[] multi=word.split(" ");
-		for(String currWord:multi)
-		{
-			if(wordNetStopWords.contains(currWord))
+		String[] multi = word.split(" ");
+		for (String currWord : multi) {
+			if (wordNetStopWords.contains(currWord))
 				return false;
 		}
 		System.out.println(word);
 
 		NounSynset nounSynset;
 		// VerbReferenceSynset nounSynset;
-		//NounSynset[] hyponyms;
+		// NounSynset[] hyponyms;
 		NounSynset[] hypernyms;
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
-		Queue<String> queue = new LinkedList<String>();	
+		Queue<String> queue = new LinkedList<String>();
 		Synset[] synsets = database.getSynsets(word, SynsetType.NOUN);
 		for (int i = 0; i < synsets.length; i++) {
-			 nounSynset = (NounSynset) (synsets[i]);
+			nounSynset = (NounSynset) (synsets[i]);
 			// hyponyms = nounSynset.getHyponyms();
-			 hypernyms=nounSynset.getHypernyms();
-		
-			Set<String> checkedWordset = checkSet(null);	
-				
-			//queue.add("");
+			hypernyms = nounSynset.getHypernyms();
+
+			Set<String> checkedWordset = checkSet(null);
+
+			// queue.add("");
 
 			for (int j = 0; j < hypernyms.length; j++) {
-					NounSynset hpn = hypernyms[j];
-					//hpn.get
-				//	System.out.println(hpn);
-					addStringArraytoQueue(queue, hpn.getWordForms());
-				
-					SetUtil.addStringArray(set, hpn.getWordForms());
-					
-	//				if(j==0)
-			//	for(String words:queue)
-				
-					while(!queue.isEmpty())
-					{String	words=queue.poll();
-						if(!checkedWordset.contains(words))
-					{	
-						if(getWordHypernyms(words,set,req,checked,depth-1))
+				NounSynset hpn = hypernyms[j];
+				// hpn.get
+				// System.out.println(hpn);
+				addStringArraytoQueue(queue, hpn.getWordForms());
+
+				SetUtil.addStringArray(set, hpn.getWordForms());
+
+				// if(j==0)
+				// for(String words:queue)
+
+				while (!queue.isEmpty()) {
+					String words = queue.poll();
+					if (!checkedWordset.contains(words)) {
+						if (getWordHypernyms(words, set, req, checked,
+								depth - 1))
 							return true;
 					}
-					}
-				
-					SetUtil.addStringArray(checkedWordset,hpn.getWordForms());
-				
 				}
 
-		
-		
+				SetUtil.addStringArray(checkedWordset, hpn.getWordForms());
+
+			}
+
 		}
-		return false; 
+		return false;
 	}
+
 	public static Set<String> getNounHyponyms(String word, Set<String> set) {
 
 		set = checkSet(set);
@@ -180,20 +178,19 @@ if(false)
 			hyponyms = nounSynset.getHyponyms();
 			hypernyms = nounSynset.getHypernyms();
 			SetUtil.addStringArray(set, nounSynset.getWordForms());
-			//hypernyms.
+			// hypernyms.
 			for (int j = 0; j < hyponyms.length; j++) {
 				NounSynset hpn = hyponyms[j];
 				SetUtil.addStringArray(set, hpn.getWordForms());
 			}
-			
-			if(false)
 
-			for (int j = 0; j < hypernyms.length; j++) {
-				NounSynset hpn = hypernyms[j];
-				SetUtil.addStringArray(set, hpn.getWordForms());
-				
-				
-			}
+			if (false)
+
+				for (int j = 0; j < hypernyms.length; j++) {
+					NounSynset hpn = hypernyms[j];
+					SetUtil.addStringArray(set, hpn.getWordForms());
+
+				}
 
 		}
 		return set;
@@ -226,9 +223,7 @@ if(false)
 			for (int j = 0; j < hyponyms.length; j++) {
 				VerbSynset hpn = hyponyms[j];
 				SetUtil.addStringArray(set, hpn.getWordForms());
-			
-			
-			
+
 			}
 
 		}
@@ -316,35 +311,28 @@ if(false)
 			set = getNounHyponyms(lword, set);
 			set = getVerbHyponyms(lword, set);
 			set = getAdjectiveHyponyms(lword, set);
-		set.add(lword);
+			set.add(lword);
 		}
 
-		
-		
-		
 		return set;
 
 	}
 
 	public static void main(String args[]) {
-		//Set<String> hyponymList = getHyponyms("mouse", null);
+		// Set<String> hyponymList = getHyponyms("mouse", null);
 
-		
 		// Set<String> hyponymList=getVerbHyponyms("transform",null);
 		// Set<String> hyponymList=getAdjectiveHyponyms("beautiful",null);
 		// Set<String> hyponymList =getAdverbHyponyms("swiftly", null);
-		/*System.out.println("--------------------hyponymList-------------");
-		for (String hpm : hyponymList) {
-			System.out.println(hpm);
+		/*
+		 * System.out.println("--------------------hyponymList-------------");
+		 * for (String hpm : hyponymList) { System.out.println(hpm);
+		 * 
+		 * }
+		 */
+		boolean bl = getWordHypernyms("spider", null, "kutta", null, 10);
 
-		}
-		
-*/		
-		boolean bl = getWordHypernyms("spider", null,"kutta",null,10);
-		
 		System.out.println(bl);
 	}
 
 }
-
-

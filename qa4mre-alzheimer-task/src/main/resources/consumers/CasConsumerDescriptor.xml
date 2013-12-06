@@ -25,7 +25,8 @@
       <nameValuePair>
         <name>OUTPUT_DIR</name>
         <value>
-          <string>XMIs/QAMRE11791/</string>
+          <!--  <string>XMIs/QAMRE11791/</string>-->
+          <string>XMIs/12-test-alzheimer/</string>
         </value>
       </nameValuePair>
       <nameValuePair>

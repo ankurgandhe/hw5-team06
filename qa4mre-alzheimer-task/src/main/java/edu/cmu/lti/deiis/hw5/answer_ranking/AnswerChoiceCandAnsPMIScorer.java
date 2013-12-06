@@ -57,7 +57,8 @@ public class AnswerChoiceCandAnsPMIScorer extends JCasAnnotator_ImplBase {
 				.getQuestionAnswerSetFromTestDocCAS(aJCas);
 
 		for (int i = 0; i < qaSet.size(); i++) {
-
+		  /* for each qa set */
+		  
 			Question question = qaSet.get(i).getQuestion();
 			System.out.println("Question: " + question.getText());
 			ArrayList<Answer> choiceList = Utils.fromFSListToCollection(qaSet
@@ -69,20 +70,23 @@ public class AnswerChoiceCandAnsPMIScorer extends JCasAnnotator_ImplBase {
 
 			int topK = Math.min(K_CANDIDATES, candSentList.size());
 			for (int c = 0; c < topK; c++) {
-
+			  /* for each candidate answer */
 				CandidateSentence candSent = candSentList.get(c);
 
 				ArrayList<NounPhrase> candSentNouns = Utils
 						.fromFSListToCollection(candSent.getSentence()
 								.getPhraseList(), NounPhrase.class);
+				/* the list of NEs in the candidate sentence */
 				ArrayList<NER> candSentNers = Utils.fromFSListToCollection(
 						candSent.getSentence().getNerList(), NER.class);
 
 				ArrayList<CandidateAnswer>candAnsList=new ArrayList<CandidateAnswer>();
 				for (int j = 0; j < choiceList.size(); j++) {
+				  /* try to match each of the choice */
 					double score1 = 0.0;
 					Answer answer = choiceList.get(j);
-
+					
+					/* p(x|y) of noun phrases */
 					for (int k = 0; k < candSentNouns.size(); k++) {
 						try {
 							score1 += scoreCoOccurInSameDoc(candSentNouns
@@ -93,6 +97,7 @@ public class AnswerChoiceCandAnsPMIScorer extends JCasAnnotator_ImplBase {
 						}
 					}
 
+					/* p(x|y) of noun NEs */
 					for (int k = 0; k < candSentNers.size(); k++) {
 
 						try {
@@ -154,6 +159,7 @@ public class AnswerChoiceCandAnsPMIScorer extends JCasAnnotator_ImplBase {
 
 			String query = question + " AND " + choiceNounPhrase;
 			// System.out.println(query);
+			/* form query */
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("q", query);
 			params.put("rows", "1");
@@ -175,7 +181,8 @@ public class AnswerChoiceCandAnsPMIScorer extends JCasAnnotator_ImplBase {
 			params.put("q", query);
 			params.put("rows", "1");
 			solrParams = new MapSolrParams(params);
-
+			
+			/* p(x) */
 			long nHits1 = 0;
 			try {
 				rsp = solrWrapper.getServer().query(solrParams);
@@ -194,13 +201,14 @@ public class AnswerChoiceCandAnsPMIScorer extends JCasAnnotator_ImplBase {
 			 * System.out.println(query+"\t"+nHits2);
 			 */
 
-			// score += myLog(combinedHits, nHits1, nHits2);
+			/* log seems needed */
+//			 score += myLog(combinedHits, nHits1, nHits2);
 			if (nHits1 != 0) {
 				score += (double) combinedHits / nHits1;
 			}
 		}
 		if (choiceNounPhrases.size() > 0) {
-			// score=score/choiceNounPhrases.size();
+			 score=score/choiceNounPhrases.size();
 		}
 		return score;
 	}
