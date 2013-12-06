@@ -147,10 +147,16 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 							.equals("None of the above")) {
 				bestChoice = choiceList.get(choiceList.size() - 1).getText();
 			}
-
+			// Select the best Choice we found
+			for (int j = 0; j < choiceList.size(); j++) {
+				Answer answer = choiceList.get(j);
+				if (answer.getText().equals(bestChoice))
+					answer.setIsSelected(true);
+			}
+			
 			System.out.println("Correct Choice: " + "\t" + correct);
 			System.out.println("Best Choice: " + "\t" + bestChoice);
-
+			
 			if (bestChoice == null) {
 				unanswered++;
 			}

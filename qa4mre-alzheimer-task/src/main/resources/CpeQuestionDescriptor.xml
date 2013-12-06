@@ -24,7 +24,7 @@
 		</casProcessor>
 		<casProcessor deployment="integrated" name="CasConsumerResultDescriptor">
 			<descriptor>
-				<import location="consumers/CasConsumerResultDescriptor.xml" />
+				<import location="consumers/OutputRunCasConsumerDescriptor.xml" />
 			</descriptor>
 			<deploymentParameters />
 			<errorHandling>
