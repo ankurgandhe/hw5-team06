@@ -118,7 +118,7 @@
         </featureDescription>
       </features>
     </typeDescription>
-    <typeDescription>
+     <typeDescription>
       <name>edu.cmu.lti.qalab.types.VerbPhrase</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
@@ -141,6 +141,7 @@
         </featureDescription>
       </features>
     </typeDescription>
+   
     <typeDescription>
       <name>edu.cmu.lti.qalab.types.NER</name>
       <description/>
@@ -289,6 +290,11 @@
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>edu.cmu.lti.qalab.types.Dependency</elementType>
         </featureDescription>
+      <featureDescription>
+          <name>AnswerScore</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -349,7 +355,7 @@ Different categories of questions require different answers (proper noun, common
         </featureDescription>
       <featureDescription>
           <name>askingForTokens</name>
-          <description>List of the tokens that compose the askingFor noun phrase, if it exists.</description>
+          <description>List of tokens in the askingFor phrase</description>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <elementType>edu.cmu.lti.qalab.types.Token</elementType>
         </featureDescription>
@@ -494,6 +500,16 @@ Different categories of questions require different answers (proper noun, common
         </featureDescription>
       <featureDescription>
           <name>vectorSimilarityScore</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>querySimilarityScore</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>tokenSimilarityScore</name>
           <description/>
           <rangeTypeName>uima.cas.Double</rangeTypeName>
         </featureDescription>
