@@ -75,9 +75,9 @@ public class AnswerChoiceQuerySimilarityScorer extends JCasAnnotator_ImplBase {
 				
 				for (int j = 0; j < choiceList.size(); j++) {
 				  Answer answer = choiceList.get(j);
-					int nnMatch = 0;
-					int nerMatch = 0;
-					int vbMatch = 0;
+					double nnMatch = 0;
+					double nerMatch = 0;
+					double vbMatch = 0;
 					for (int k = 0; k < questionNouns.size(); k++) {
 						for (int l = 0; l < candSentNers.size(); l++) {
 							if (AnswerChoiceQuerySimilarityScorer.match(questionNouns.get(k).getText(),candSentNers.get(l).getText()) ) {
@@ -111,6 +111,15 @@ public class AnswerChoiceQuerySimilarityScorer extends JCasAnnotator_ImplBase {
 					}
 					
 					nnMatch+=nerMatch+vbMatch;
+					double totalMatch = questionNouns.size()
+							* (candSentNouns.size() + candSentNers.size())
+							+ questionNers.size()
+							* (candSentNouns.size() + candSentNers.size())
+							+ questionVerbs.size()
+							* (candSentVerbs.size());
+					
+					nnMatch/=totalMatch;
+					
 					CandidateAnswer candAnswer = null;
 					if (candSent.getCandAnswerList() == null) {
 						candAnswer = new CandidateAnswer(aJCas);
@@ -123,7 +132,7 @@ public class AnswerChoiceQuerySimilarityScorer extends JCasAnnotator_ImplBase {
 					candAnswer.setText(answer.getText());
 					candAnswer.setQId(answer.getQuestionId());
 					candAnswer.setChoiceIndex(j);
-					double totalNum=questionNouns.size()+questionNers.size()+questionVerbs.size();
+					double totalNum=1;//questionNouns.size()+questionNers.size()+questionVerbs.size();
 					if(totalNum!=0){
 					  candAnswer.setQuerySimilarityScore(nnMatch/totalNum);
 					}else{

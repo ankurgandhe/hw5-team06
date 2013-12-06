@@ -21,17 +21,19 @@ import edu.cmu.lti.qalab.types.TestDocument;
 import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.cmu.lti.qalab.utils.Utils;
 
-public class AnswerSelectionByKCandMaxAggregation extends JCasAnnotator_ImplBase {
+public class AnswerSelectionByKCandMaxAggregation extends
+		JCasAnnotator_ImplBase {
 
 	int K_CANDIDATES = 5;
-
+	double total_cat1=0.0;
+	double nDocs = 0.0;
 	@Override
 	public void initialize(UimaContext context)
 			throws ResourceInitializationException {
 		super.initialize(context);
 		K_CANDIDATES = (Integer) context
 				.getConfigParameterValue("K_CANDIDATES");
-		
+
 	}
 
 	@Override
@@ -76,25 +78,35 @@ public class AnswerSelectionByKCandMaxAggregation extends JCasAnnotator_ImplBase
 								CandidateAnswer.class);
 
 				for (int j = 0; j < candAnswerList.size(); j++) {
-				  
+
 					CandidateAnswer candAns = candAnswerList.get(j);
 					String answer = candAns.getText();
-					
-					
-					if(!answer.equals("None of the above")){
-					  double totalScore = candAns.getSimilarityScore()
-					          + candAns.getVectorSimilarityScore() + 5*candAns.getQuerySimilarityScore();
 
-					  Double existingVal=hshAnswer.get(answer);
-					  if(existingVal==null){
-					    existingVal=new Double(0.0);
-					  }
-					  if(totalScore>existingVal){
-					    existingVal=totalScore;
-					  }
-					  hshAnswer.put(answer, existingVal);
-					}else{
-					  hshAnswer.put(answer, 0.0);
+					if (!answer.equals("None of the above")) {
+						double totalScore = 2
+								* candAns.getTokenSimilarityScore()
+								+ 2*candAns.getQuerySimilarityScore()
+								+ 3*candSent.getRelevanceScore()
+								+ 1*candAns.getVectorSimilarityScore()
+								+ candAns.getPMIScore();
+						if (answer.equals("AD")){
+							totalScore=candAns.getQuerySimilarityScore()
+									+ candSent.getRelevanceScore()
+									+ candAns.getPMIScore();
+						}
+						// + candAns.getVectorSimilarityScore()/2 ; //+
+						// candAns.getQuerySimilarityScore();
+
+						Double existingVal = hshAnswer.get(answer);
+						if (existingVal == null) {
+							existingVal = new Double(0.0);
+						}
+						if (totalScore > existingVal) {
+							existingVal = totalScore;
+						}
+						hshAnswer.put(answer, existingVal);
+					} else {
+						hshAnswer.put(answer, 0.0);
 					}
 				}
 			}
@@ -106,11 +118,13 @@ public class AnswerSelectionByKCandMaxAggregation extends JCasAnnotator_ImplBase
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			if(bestChoice == null && choiceList.get(choiceList.size()-1).getText().equals("None of the above")){
-			  bestChoice=choiceList.get(choiceList.size()-1).getText();
+
+			if (bestChoice == null
+					&& choiceList.get(choiceList.size() - 1).getText()
+							.equals("None of the above")) {
+				bestChoice = choiceList.get(choiceList.size() - 1).getText();
 			}
-			
+
 			System.out.println("Correct Choice: " + "\t" + correct);
 			System.out.println("Best Choice: " + "\t" + bestChoice);
 
@@ -134,11 +148,13 @@ public class AnswerSelectionByKCandMaxAggregation extends JCasAnnotator_ImplBase
 		double cAt1 = (((double) matched) / ((double) total) * unanswered + (double) matched)
 				* (1.0 / total);
 		System.out.println("c@1 score:" + cAt1);
+		total_cat1+=cAt1;
+		nDocs++;
 
 	}
-	
-	public String findBestChoice(
-			HashMap<String, Double> hshAnswer) throws Exception {
+
+	public String findBestChoice(HashMap<String, Double> hshAnswer)
+			throws Exception {
 
 		Iterator<String> it = hshAnswer.keySet().iterator();
 		String bestAns = null;
@@ -147,18 +163,24 @@ public class AnswerSelectionByKCandMaxAggregation extends JCasAnnotator_ImplBase
 		while (it.hasNext()) {
 			String key = it.next();
 			Double val = hshAnswer.get(key);
-			System.out.println(key+"\t"+key+"\t"+val);
+			
+				
+			System.out.println(key + "\t" + key + "\t" + val);
 			if (val > maxScore) {
 				maxScore = val;
 				bestAns = key;
-			}  
+			}
 
 		}
-		if(maxScore<5){
-		  bestAns=null;
+		if (maxScore < 0) {
+			bestAns = null;
 		}
 		return bestAns;
 	}
+	public void destroy() {
+         System.out.println("Average c@1:" + total_cat1 /
+         nDocs);
+}
 
 
 }

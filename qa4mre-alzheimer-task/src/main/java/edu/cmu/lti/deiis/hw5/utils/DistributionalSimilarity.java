@@ -45,7 +45,7 @@ public class DistributionalSimilarity {
 
 		BufferedReader br;
 		double count = 0.0;
-		System.out.print("Reading Words Vectors... ");
+		System.out.print("Reading Words Vectors from"+filename+" ... ");
 		try {
 			br = new BufferedReader(new FileReader(filename));
 			String line = br.readLine();

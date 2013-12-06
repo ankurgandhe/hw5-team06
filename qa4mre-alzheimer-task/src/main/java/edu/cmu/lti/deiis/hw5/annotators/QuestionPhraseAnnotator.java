@@ -106,6 +106,7 @@ public class QuestionPhraseAnnotator extends JCasAnnotator_ImplBase{
 		
 		ArrayList<NounPhrase>nounPhraseList=new ArrayList<NounPhrase>();
 		String nounPhrase="";
+		String nounOnly="";
 		Boolean nounFlag = false;
 		for(int i=0;i<tokenList.size();i++){
 			Token token=tokenList.get(i);
@@ -114,18 +115,29 @@ public class QuestionPhraseAnnotator extends JCasAnnotator_ImplBase{
 			//System.out.println("Token: "+word+"/"+pos);
 			if(pos.startsWith("NN")){
 				nounPhrase+=word+" ";
+				nounOnly+=word+" ";
 				nounFlag = true;
 			}else if ((pos.startsWith("JJ") || pos.startsWith("CD") ) && !nounFlag ){
 			  nounPhrase+=word+" ";
 			}else{
 				nounPhrase=nounPhrase.trim();
+				nounOnly = nounOnly.trim();
 				if(!nounPhrase.equals("") && nounFlag){
 					NounPhrase nn=new NounPhrase(jCas);
 					nounPhrase=nounPhrase.trim();
 					nn.setText(nounPhrase);
 					nounPhraseList.add(nn);
+					if (nounOnly!="" && nounOnly!=nounPhrase){
+						for (String nouns : nounOnly.split(" ")){
+							NounPhrase nnOnly=new NounPhrase(jCas);
+							nnOnly.setText(nouns);
+							nounPhraseList.add(nnOnly);	
+						}
+						
+					}
 					//System.out.println("Noun Phrase: "+nounPhrase);
 					nounPhrase="";
+					nounOnly="";
 					nounFlag = false;
 				} else if (!nounFlag) {nounPhrase="";}
 			}
@@ -136,6 +148,14 @@ public class QuestionPhraseAnnotator extends JCasAnnotator_ImplBase{
 			NounPhrase nn=new NounPhrase(jCas);
 			nn.setText(nounPhrase);
 			nounPhraseList.add(nn);
+			if (nounOnly!="" && nounOnly!=nounPhrase){
+				for (String nouns : nounOnly.split(" ")){
+					NounPhrase nnOnly=new NounPhrase(jCas);
+					nnOnly.setText(nouns);
+					nounPhraseList.add(nnOnly);	
+				}
+				
+			}
 		}
 		
 		return nounPhraseList;

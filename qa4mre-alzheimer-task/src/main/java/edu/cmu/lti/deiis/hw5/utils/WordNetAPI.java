@@ -11,7 +11,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import edu.cmu.lti.deiis.hw5.constants.StopWords;
 import edu.cmu.lti.deiis.hw5.constants.WordNetConstants;
+import edu.cmu.lti.qalab.utils.Utils;
 import edu.smu.tspell.wordnet.AdjectiveSynset;
 import edu.smu.tspell.wordnet.NounSynset;
 import edu.smu.tspell.wordnet.Synset;
@@ -54,15 +56,23 @@ public static String stopLine="entity,abstraction,concept,idea,abstract entity,a
 	}
 
 	public static Set<String> getHyponyms(String word, Set<String> set) {
-
+		set = checkSet(set);
 		Set<String> cachedWords = cache.get(word);
 		if (cachedWords != null)
 			return cachedWords;
-
+try {
+	if(Utils.getStopWordsSet(StopWords.infile).contains(word))
+	{return set;
+		}
+} catch (IOException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+		
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		// database.getBaseFormCandidates(word,SynsetType.ADJECTIVE );
 		
-		set = checkSet(set);
+	
 		set = getNounHyponyms(word, set);
 		set = getVerbHyponyms(word, set);
 		set = getAdjectiveHyponyms(word, set);

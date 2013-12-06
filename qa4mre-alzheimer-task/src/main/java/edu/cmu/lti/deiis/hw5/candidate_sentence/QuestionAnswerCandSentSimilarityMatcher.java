@@ -99,12 +99,17 @@ public class QuestionAnswerCandSentSimilarityMatcher  extends JCasAnnotator_Impl
 			    }
 			  }
 			  
+			  	ArrayList<String> coveredSentence = new ArrayList<String>();
 				for(int j=0;j<maxSize;j++){
 				  for(int k=0;k<choiceList.size();k++){
-				    if(k>=results[j].size()){
+				    /*if(k>=results[j].size()){
 				      continue;
-				    }
-				    SolrDocument doc=results[j].get(k);					
+				    }*/
+				    if(j>=results[k].size()){
+					      continue;
+					    }
+				    //SolrDocument doc=results[j].get(k);					
+				    SolrDocument doc=results[k].get(j);
 				    String sentId=doc.get("id").toString();
 				    String docId=doc.get("docid").toString();
 				    if(!testDocId.equals(docId)){
@@ -117,6 +122,9 @@ public class QuestionAnswerCandSentSimilarityMatcher  extends JCasAnnotator_Impl
 					
 				    Sentence annSentence=sentenceList.get(idx);
 				    String sentence=doc.get("text").toString();
+				    if (coveredSentence.contains(sentence))
+				    	continue ;
+				    coveredSentence.add(sentence);	
 				    double relScore=Double.parseDouble(doc.get("score").toString());
 				    CandidateSentence candSent=new CandidateSentence(aJCas);
 				    candSent.setSentence(annSentence);
@@ -155,7 +163,8 @@ public class QuestionAnswerCandSentSimilarityMatcher  extends JCasAnnotator_Impl
 		
 		if(!answer.getText().equals("None of the above")){
 		  for(int i=0;i<nounPhrasesA.size();i++){
-		    solrQuery+="nounphrases:\""+nounPhrasesA.get(i).getText()+"\" ";      
+		    solrQuery+="nounphrases:\""+nounPhrasesA.get(i).getText()+"\" ";
+		    
 		  }
 		}
 		
@@ -169,6 +178,7 @@ public class QuestionAnswerCandSentSimilarityMatcher  extends JCasAnnotator_Impl
 		if(!answer.getText().equals("None of the above")){
 		  for(int i=0;i<neListA.size();i++){
 		    solrQuery+="namedentities:\""+neListA.get(i).getText()+"\" ";
+		    
 		  }
 		}
 		
@@ -179,7 +189,7 @@ public class QuestionAnswerCandSentSimilarityMatcher  extends JCasAnnotator_Impl
 		}
 		
 		solrQuery=solrQuery.trim();
-		System.out.println(solrQuery);
+		System.out.println("answer:"+answer.getText()+","+solrQuery);
 		return solrQuery;
 	}
 

@@ -72,7 +72,7 @@ public class AnswerChoiceCandAnsSynonymScorer extends JCasAnnotator_ImplBase {
 				
 				ArrayList<CandidateAnswer> candAnsList = new ArrayList<CandidateAnswer>();
 				for (int j = 0; j < choiceList.size(); j++) {
-
+					
 					Answer answer = choiceList.get(j);
 					ArrayList<Token> choiceTokens = Utils
 							.fromFSListToCollection(answer.getTokenList(),
@@ -101,7 +101,7 @@ public class AnswerChoiceCandAnsSynonymScorer extends JCasAnnotator_ImplBase {
 						}
 					}
 
-
+					synMatch = synMatch/choiceTokens.size();
 					System.out.println(choiceList.get(j).getText() + "\t"
 							+ synMatch);
 					CandidateAnswer candAnswer = null;

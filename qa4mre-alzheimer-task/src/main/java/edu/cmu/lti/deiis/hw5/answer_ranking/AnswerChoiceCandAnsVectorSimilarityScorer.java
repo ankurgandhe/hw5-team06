@@ -154,7 +154,15 @@ public class AnswerChoiceCandAnsVectorSimilarityScorer extends
 						}
 					}
 					
-					//similarityScore = similarityScore/count; 
+					//similarityScore = similarityScore/count;
+					double totalMatch = candSentNouns.size()
+							* (choiceNouns.size() + choiceNERs.size())
+							+ candSentNers.size()
+							* (choiceNouns.size() + choiceNERs.size())
+							+ candSentVerbs.size()
+							* (choiceVerbs.size());
+					
+					similarityScore/=totalMatch;
 					System.out.println(choiceList.get(j).getText() + "\t"
 							+ similarityScore+","+count);
 					CandidateAnswer candAnswer = null;

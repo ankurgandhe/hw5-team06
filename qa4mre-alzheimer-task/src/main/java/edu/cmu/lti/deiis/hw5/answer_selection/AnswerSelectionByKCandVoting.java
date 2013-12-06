@@ -21,6 +21,8 @@ import edu.cmu.lti.qalab.utils.Utils;
 public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 
   int K_CANDIDATES = 5;
+	double total_cat1=0.0;
+	double nDocs = 0.0;
 
   @Override
 	public void initialize(UimaContext context)
@@ -72,10 +74,22 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 
           CandidateAnswer candAns = candAnswerList.get(j);
           String answer = candAns.getText();
-
-          double totalScore = 0.0*candAns.getSimilarityScore() + 0.0*candAns.getSynonymScore()
-                  + 2*candAns.getPMIScore() + 2.5*candAns.getVectorSimilarityScore()+  0.5*choiceList.get(candAns.getChoiceIndex()).getAnswerScore();
-          System.out.println(totalScore);
+          double totalScore = 
+					 2*candAns.getTokenSimilarityScore()
+					//+ candAns.getQuerySimilarityScore()
+					+ 0.33*candAns.getSynonymScore()
+					//+ 3*candSent.getRelevanceScore()
+					+ 2.5*candAns.getVectorSimilarityScore()
+					+ candAns.getPMIScore();
+			if (answer.equals("AD")){
+				totalScore=candAns.getQuerySimilarityScore()
+						+ candSent.getRelevanceScore()
+						+ candAns.getPMIScore();
+				totalScore=0.0;
+			}
+          //double totalScore = 0.0*candAns.getSimilarityScore() + 0.0*candAns.getSynonymScore()
+                  //+ 2*candAns.getPMIScore() + 2.5*candAns.getVectorSimilarityScore()+  0.5*choiceList.get(candAns.getChoiceIndex()).getAnswerScore();
+          //System.out.println(totalScore);
           if (totalScore > maxScore) {
             maxScore = totalScore;
             selectedAnswer = answer;
@@ -117,6 +131,9 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
     double cAt1 = (((double) matched) / ((double) total) * unanswered + (double) matched)
             * (1.0 / total);
     System.out.println("c@1 score:" + cAt1);
+	total_cat1+=cAt1;
+	nDocs++;
+
 
   }
 
@@ -139,5 +156,8 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 
     return bestAns;
   }
-
+  public void destroy() {
+      System.out.println("Average c@1:" + total_cat1 /
+      nDocs);
+  }
 }

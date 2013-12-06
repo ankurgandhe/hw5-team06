@@ -48,6 +48,15 @@
   <delegateAnalysisEngine key="AnswerSelectionByKCandMaxAggregation">
       <import name="annotators.AnswerSelectionByKCandMaxAggregation"/>
     </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceCandAnsTokenSimilarityScorer">
+      <import name="annotators.AnswerChoiceCandAnsTokenSimilarityScorer"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="AnswerChoiceCandAnsVectorTokenSimilarityScorer">
+      <import name="annotators.AnswerChoiceCandAnsVectorTokenSimilarityScorer"/>
+    </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerChoiceQueryTokenSimilarityScorer">
+      <import name="annotators.AnswerChoiceQueryTokenSimilarityScorer"/>
+    </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
     <name>CpeQuestionDescriptor</name>
@@ -64,10 +73,11 @@
         <node>QuestionCategoryAnnotator</node>
         <!-- <node>AnswerChoiceCandAnsSynonymScorer</node>-->
         <!--<node>AnswerChoiceCandAnsPMIScorer</node>-->
-        <node>AnswerChoiceCandAnsVectorSimilarityScorer</node>
-      <node>AnswerChoiceCandAnsSimilarityScorer</node>
+        <node>AnswerChoiceCandAnsSimilarityScorer</node>
       <node>AnswerChoiceQuerySimilarityScorer</node>
-        <node>AnswerChoiceCandAnsSynScorer</node>
+      <node>AnswerChoiceCandAnsTokenSimilarityScorer</node>
+        <node>AnswerChoiceCandAnsVectorTokenSimilarityScorer</node>
+        <node>AnswerChoiceQueryTokenSimilarityScorer</node>
         <node>AnswerSelectionByKCandMaxAggregation</node>
       </fixedFlow>
     </flowConstraints>

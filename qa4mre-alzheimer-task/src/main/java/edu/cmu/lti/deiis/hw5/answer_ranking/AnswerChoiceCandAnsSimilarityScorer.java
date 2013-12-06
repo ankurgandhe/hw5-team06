@@ -28,7 +28,8 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 	public void initialize(UimaContext context)
 			throws ResourceInitializationException {
 		super.initialize(context);
-		K_CANDIDATES=(Integer)context.getConfigParameterValue("K_CANDIDATES");
+		K_CANDIDATES = (Integer) context
+				.getConfigParameterValue("K_CANDIDATES");
 	}
 
 	@Override
@@ -50,25 +51,26 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 							CandidateSentence.class);
 
 			int topK = Math.min(K_CANDIDATES, candSentList.size());
-			
-			//Candidate answer scoring logic starts here
+
+			// Candidate answer scoring logic starts here
+
 			for (int c = 0; c < topK; c++) {
 
 				CandidateSentence candSent = candSentList.get(c);
 
 				ArrayList<NounPhrase> candSentNouns = Utils
 						.fromFSListToCollection(candSent.getSentence()
-								.getPhraseList(), NounPhrase.class);//getNouns
+								.getPhraseList(), NounPhrase.class);// getNouns
 				ArrayList<NER> candSentNers = Utils.fromFSListToCollection(
 						candSent.getSentence().getNerList(), NER.class);
-				ArrayList<VerbPhrase> candSentVerbs = Utils.fromFSListToCollection(
-						candSent.getSentence().getVerbPhraseList(), VerbPhrase.class);
+				ArrayList<VerbPhrase> candSentVerbs = Utils
+						.fromFSListToCollection(candSent.getSentence()
+								.getVerbPhraseList(), VerbPhrase.class);
 				
-				//get NamedEntities
-				
+				// get NamedEntities
+
 				ArrayList<CandidateAnswer> candAnsList = new ArrayList<CandidateAnswer>();
-				
-				
+
 				for (int j = 0; j < choiceList.size(); j++) {
 
 					Answer answer = choiceList.get(j);
@@ -80,24 +82,31 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 					ArrayList<VerbPhrase> choiceVerbs = Utils
 							.fromFSListToCollection(answer.getVerbPhraseList(),
 									VerbPhrase.class);
-					int nnMatch = 0;
-					int nerMatch = 0;
-					int vbMatch = 0;
+					Utils.printNounList(choiceNouns);
+					Utils.printVerbList(choiceVerbs);
+					Utils.printNerList(choiceNERs);
+					double nnMatch = 0;
+					double nerMatch = 0;
+					double vbMatch = 0;
 					for (int k = 0; k < candSentNouns.size(); k++) {
 						// If candidate Noun Phrase contains answer NER
 						for (int l = 0; l < choiceNERs.size(); l++) {
 							if (candSentNouns.get(k).getText()
-									.contains(choiceNERs.get(l).getText()) || computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNERs.get(l).getText())<=1 ) {
+									.contains(choiceNERs.get(l).getText())
+									|| computeLevenshteinDistance(candSentNouns
+											.get(k).getText(), choiceNERs
+											.get(l).getText()) <= 1) {
 								nerMatch++;
 							}
 						}
 						// If candidate Noun phrase contains answer Nouns
 						for (int l = 0; l < choiceNouns.size(); l++) {
 							if (candSentNouns.get(k).getText()
-									.contains(choiceNouns.get(l).getText()) ) {
-								//|| computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNouns.get(l).getText())<=1)
+									.contains(choiceNouns.get(l).getText())) {
+								// ||
+								// computeLevenshteinDistance(candSentNouns.get(k).getText(),choiceNouns.get(l).getText())<=1)
 								nnMatch++;
-								
+
 							}
 						}
 					}
@@ -105,15 +114,17 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 					for (int k = 0; k < candSentNers.size(); k++) {
 						for (int l = 0; l < choiceNERs.size(); l++) {
 							if (candSentNers.get(k).getText()
-									.contains(choiceNERs.get(l).getText()) ) {
-								//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
+									.contains(choiceNERs.get(l).getText())) {
+								// ||
+								// computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
 								nerMatch++;
 							}
 						}
 						for (int l = 0; l < choiceNouns.size(); l++) {
 							if (candSentNers.get(k).getText()
-									.contains(choiceNouns.get(l).getText()) ) {
-								nnMatch++;//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNouns.get(l).getText())<=1 
+									.contains(choiceNouns.get(l).getText())) {
+								nnMatch++;// ||
+											// computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNouns.get(l).getText())<=1
 							}
 						}
 
@@ -123,18 +134,26 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 					for (int k = 0; k < candSentVerbs.size(); k++) {
 						for (int l = 0; l < choiceVerbs.size(); l++) {
 							if (candSentVerbs.get(k).getText()
-									.contains(choiceVerbs.get(l).getText()) ) {
-								//|| computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
+									.contains(choiceVerbs.get(l).getText())) {
+								// ||
+								// computeLevenshteinDistance(candSentNers.get(k).getText(),choiceNERs.get(l).getText())<=1
 								vbMatch++;
 							}
 						}
 
 					}
 					// Add scores of matches of Answer NER with NN
-					//nerMatch=nerMatch/(candSentNouns.size()+candSentNers.size());
-					//nnMatch=nnMatch/(candSentNouns.size()+candSentNers.size());
-					
-					nnMatch+=nerMatch+vbMatch;
+					// nerMatch=nerMatch/(candSentNouns.size()+candSentNers.size());
+					// nnMatch=nnMatch/(candSentNouns.size()+candSentNers.size());
+
+					nnMatch += nerMatch + vbMatch;
+					double totalMatch = candSentNouns.size()
+							* (choiceNouns.size() + choiceNERs.size())
+							+ candSentNers.size()
+							* (choiceNouns.size() + choiceNERs.size())
+							+ candSentVerbs.size()
+							* (choiceVerbs.size());
+					nnMatch/=totalMatch;
 					System.out.println(choiceList.get(j).getText() + "\t"
 							+ nnMatch);
 					CandidateAnswer candAnswer = null;
@@ -151,7 +170,7 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 					candAnswer.setQId(answer.getQuestionId());
 					candAnswer.setChoiceIndex(j);
 					candAnswer.setSimilarityScore(nnMatch);
-					//candAnswer.sets
+					// candAnswer.sets
 					candAnsList.add(candAnswer);
 				}
 
@@ -160,7 +179,7 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 				candSent.setCandAnswerList(fsCandAnsList);
 				candSentList.set(c, candSent);
 
-			}			//Candidate answer scoring logic ends here
+			} // Candidate answer scoring logic ends here
 
 			System.out
 					.println("================================================");
@@ -173,28 +192,30 @@ public class AnswerChoiceCandAnsSimilarityScorer extends JCasAnnotator_ImplBase 
 		testDoc.setQaList(fsQASet);
 
 	}
+	
+	public static int computeLevenshteinDistance(String str1, String str2) {
+		int[][] distance = new int[str1.length() + 1][str2.length() + 1];
 
-	public static int computeLevenshteinDistance(String str1,String str2) {
-        int[][] distance = new int[str1.length() + 1][str2.length() + 1];
+		for (int i = 0; i <= str1.length(); i++)
+			distance[i][0] = i;
+		for (int j = 1; j <= str2.length(); j++)
+			distance[0][j] = j;
 
-        for (int i = 0; i <= str1.length(); i++)
-                distance[i][0] = i;
-        for (int j = 1; j <= str2.length(); j++)
-                distance[0][j] = j;
+		for (int i = 1; i <= str1.length(); i++)
+			for (int j = 1; j <= str2.length(); j++)
+				distance[i][j] = minimum(
+						distance[i - 1][j] + 1,
+						distance[i][j - 1] + 1,
+						distance[i - 1][j - 1]
+								+ ((str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0
+										: 1));
 
-        for (int i = 1; i <= str1.length(); i++)
-                for (int j = 1; j <= str2.length(); j++)
-                        distance[i][j] = minimum(
-                                        distance[i - 1][j] + 1,
-                                        distance[i][j - 1] + 1,
-                                        distance[i - 1][j - 1]+ ((str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1));
-        
-        return distance[str1.length()][str2.length()];    
-}
+		return distance[str1.length()][str2.length()];
+	}
 
 	private static int minimum(int i, int j, int k) {
-		 return Math.min(Math.min(i, j), k);
-		
+		return Math.min(Math.min(i, j), k);
+
 	}
 
 }

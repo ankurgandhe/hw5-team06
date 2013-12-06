@@ -50,7 +50,6 @@ public class SolrIndexer extends JCasAnnotator_ImplBase {
 		}
 
 	}
-
 	@Override
 	public void process(JCas jCas) throws AnalysisEngineProcessException {
 
