@@ -1,9 +1,11 @@
 package edu.cmu.lti.deiis.hw5.annotators;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.SetUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -11,6 +13,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import edu.cmu.lti.deiis.hw5.utils.SetUtil;
 import edu.cmu.lti.qalab.types.Question;
 import edu.cmu.lti.qalab.types.QuestionAnswerSet;
 import edu.cmu.lti.qalab.types.TestDocument;
@@ -97,10 +100,32 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
         else if (whWords.get(7)){question.setCategory("howmany");}
         else if (whWords.get(8)){question.setCategory("howmuch");}
         else {question.setCategory("other");}
-      } else {question.setCategory("conflict");}
-      //resolve category conflict for questions with multiple wh-words
-      //determine if one is merely introducing a subordinate clause
-      //check if numMatch != 1 then do stuff
+      } else {
+        question.setCategory("other");
+        Boolean whFound = false;
+        for(int j=0;j<tokenList.size();j++){
+          Token t = tokenList.get(j);
+          String tPos = t.getPos();
+          String word = t.getText().toLowerCase();
+          if (tPos.startsWith("W") && !whFound){
+            if (word.startsWith("who")){question.setCategory("who");whFound=true;}
+            else if (word.startsWith("what")){question.setCategory("what");whFound=true;}
+            else if (word.startsWith("when")){question.setCategory("when");whFound=true;}
+            else if (word.startsWith("where")){question.setCategory("where");whFound=true;}
+            else if (word.startsWith("why")){question.setCategory("why");whFound=true;}
+            else if (word.startsWith("how")){
+              if (j<tokenList.size()-1){
+                String next = tokenList.get(j+1).getText().toLowerCase();
+                if (next.startsWith("many")){question.setCategory("howmany");whFound=true;}
+                else if (next.startsWith("much")){question.setCategory("howmuch");whFound=true;}
+                else {question.setCategory("how");whFound=true;}
+              }else{question.setCategory("how");whFound=true;}
+            }
+            else if (word.startsWith("which")){question.setCategory("which");whFound=true;}
+            else {question.setCategory("other");}
+          }else if (tPos.startsWith("W") && whFound){question.setCategory("conflict");}
+        }
+      }
 
 			//question.addToIndexes();
 			questionList.set(i, question);
@@ -112,6 +137,9 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 	      System.out.println("\t\t\t" + numMatch + " " + whWords);  
 			} else {System.out.println();}
 			System.out.println();*/
+			
+      String skt = "sort,kind,type,brand,category,class,kin,manner,species,variety,sorts,kinds,types,brands,categories,classes,manners,varieties";
+			Set<String> sktwords = SetUtil.addStringArray(null, skt.split(","));
 			
 			ArrayList<Token> askingTokens = new ArrayList<Token>();
 			
@@ -142,11 +170,20 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
             }else if (tPos.startsWith("JJ") && !nounFlag){
               asking+=word+" ";
               askingTokens.add(t);
-            }else if (word.equals("of")){
-              //SKT nouns: sort, kind, kin, type, manner, variety, class, brand, species, category
-              asking = "";
-              askingTokens.clear();
-              nounFlag = false;
+            }else if (word.equals("of") && j>0){
+              if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
+                asking = "";
+                askingTokens.clear();
+                nounFlag = false;
+              } else {
+                asking=asking.trim();
+                if(!asking.equals("") && nounFlag){
+                  asking=asking.trim();
+                  question.setAskingFor(asking);
+                  question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                  break;
+                } else if (!nounFlag) {asking="";askingTokens.clear();}
+              }
             }else{
               asking=asking.trim();
               if(!asking.equals("") && nounFlag){
