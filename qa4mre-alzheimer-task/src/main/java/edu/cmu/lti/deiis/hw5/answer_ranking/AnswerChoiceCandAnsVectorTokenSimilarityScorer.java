@@ -137,8 +137,8 @@ public class AnswerChoiceCandAnsVectorTokenSimilarityScorer extends
 									.size());
 
 					similarityScore /= totalMatch;
-					System.out.println(choiceList.get(j).getText() + "\t"
-							+ similarityScore + "," + count);
+					//System.out.println(choiceList.get(j).getText() + "\t"
+					//		+ similarityScore + "," + count);
 					
 					CandidateAnswer candAnswer = null;
 					if (candSent.getCandAnswerList() == null) {

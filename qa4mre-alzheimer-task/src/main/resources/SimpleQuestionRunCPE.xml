@@ -54,6 +54,9 @@
     <delegateAnalysisEngine key="AnswerChoiceQueryTokenSimilarityScorer">
       <import name="annotators.AnswerChoiceQueryTokenSimilarityScorer"/>
     </delegateAnalysisEngine>
+  <delegateAnalysisEngine key="AnswerSelectionByKCandMaxAggregation">
+      <import name="annotators.AnswerSelectionByKCandMaxAggregation"/>
+    </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>
     <name>CpeQuestionDescriptor</name>

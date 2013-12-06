@@ -81,7 +81,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 					//+ 3*candSent.getRelevanceScore()
 					+ 3*candAns.getVectorSimilarityScore()
 					+ candAns.getPMIScore();
-			if (answer.equals("AD")){
+			if (answer.equals("AD")||answer.equals("None of the above")){
 				totalScore=candAns.getQuerySimilarityScore()
 						+ candSent.getRelevanceScore()
 						+ candAns.getPMIScore();
@@ -95,11 +95,16 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
             selectedAnswer = answer;
           }
         }
-        Double existingVal = hshAnswer.get(selectedAnswer);
-        if (existingVal == null) {
-          existingVal = new Double(0.0);
+        
+        
+        //when all scores are low, the candidate sentence should not participate in the voting procedure 
+        if(maxScore>0.5){
+          Double existingVal = hshAnswer.get(selectedAnswer);
+          if (existingVal == null) {
+            existingVal = new Double(0.0);
+          }
+          hshAnswer.put(selectedAnswer, existingVal + 1.0);
         }
-        hshAnswer.put(selectedAnswer, existingVal + 1.0);
       }
 
       String bestChoice = null;
@@ -109,6 +114,14 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
       } catch (Exception e) {
         e.printStackTrace();
       }
+      
+      //choosing "none of the above" if this choice existed and no answer is chosen
+      if (bestChoice == null
+              && choiceList.get(choiceList.size() - 1).getText()
+                  .equals("None of the above")) {
+            bestChoice = choiceList.get(choiceList.size() - 1).getText();
+      }
+      
       System.out.println("Correct Choice: " + "\t" + correct);
       System.out.println("Best Choice: " + "\t" + bestChoice);
 
@@ -153,6 +166,10 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
       }
 
     }
+    
+    //if no answer could significantly outperform other answers, do not answer this question 
+    if(maxScore<5)
+      bestAns=null;
 
     return bestAns;
   }

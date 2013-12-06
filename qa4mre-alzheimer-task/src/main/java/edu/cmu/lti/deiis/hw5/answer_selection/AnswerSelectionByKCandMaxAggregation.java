@@ -83,20 +83,13 @@ public class AnswerSelectionByKCandMaxAggregation extends
 					String answer = candAns.getText();
 
 					if (!answer.equals("None of the above")) {
-						double totalScore = 2
-								* candAns.getTokenSimilarityScore()
-								+ 2*candAns.getQuerySimilarityScore()
-								+ 3*candSent.getRelevanceScore()
-								+ 1*candAns.getVectorSimilarityScore()
-								+ candAns.getPMIScore();
-						if (answer.equals("AD")){
-							totalScore=candAns.getQuerySimilarityScore()
-									+ candSent.getRelevanceScore()
-									+ candAns.getPMIScore();
-						}
-						// + candAns.getVectorSimilarityScore()/2 ; //+
-						// candAns.getQuerySimilarityScore();
-
+						double totalScore = 
+						    	2*candAns.getTokenSimilarityScore()
+								+ 0.5*candAns.getQuerySimilarityScore()
+								+ 0*candSent.getRelevanceScore()
+								+ 2*candAns.getVectorSimilarityScore()
+								+ 0*candAns.getSynonymScore();
+						
 						Double existingVal = hshAnswer.get(answer);
 						if (existingVal == null) {
 							existingVal = new Double(0.0);
@@ -172,7 +165,7 @@ public class AnswerSelectionByKCandMaxAggregation extends
 			}
 
 		}
-		if (maxScore < 0) {
+		if (maxScore < 1) {
 			bestAns = null;
 		}
 		return bestAns;

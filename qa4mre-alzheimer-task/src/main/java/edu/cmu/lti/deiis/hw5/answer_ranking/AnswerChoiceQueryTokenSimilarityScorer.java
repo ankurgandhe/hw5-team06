@@ -126,7 +126,7 @@ public class AnswerChoiceQueryTokenSimilarityScorer extends JCasAnnotator_ImplBa
 					}
 					candAnsList.add(candAnswer);
 				}
-				System.out.println(candSent.getSentence().getText()+":"+nnMatch);
+				//System.out.println(candSent.getSentence().getText()+":"+nnMatch);
 				FSList fsCandAnsList = Utils.fromCollectionToFSList(aJCas,
 						candAnsList);
 				candSent.setCandAnswerList(fsCandAnsList);

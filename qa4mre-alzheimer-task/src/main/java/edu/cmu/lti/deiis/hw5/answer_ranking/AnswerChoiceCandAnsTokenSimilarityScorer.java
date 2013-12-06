@@ -145,9 +145,9 @@ public class AnswerChoiceCandAnsTokenSimilarityScorer extends
 					matchedCantSent = matchedCantSent / 20;
 					if (matchedCantSent > 2)
 						nnMatch = nnMatch / 2; // matchedCantSent;
-					System.out.println(candSent.getSentence().getText()
-							+ ";tokenSim:" + choiceList.get(j).getText() + "\t"
-							+ nnMatch + "," + totalMatch);
+					//System.out.println(candSent.getSentence().getText()
+					//		+ ";tokenSim:" + choiceList.get(j).getText() + "\t"
+					//		+ nnMatch + "," + totalMatch);
 					CandidateAnswer candAnswer = null;
 					if (candSent.getCandAnswerList() == null) {
 						candAnswer = new CandidateAnswer(aJCas);
