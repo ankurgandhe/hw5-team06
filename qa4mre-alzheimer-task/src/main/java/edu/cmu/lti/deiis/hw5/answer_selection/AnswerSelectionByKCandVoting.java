@@ -59,6 +59,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 			boolean isNoneOfTheAbove = false;
 			for (int j = 0; j < choiceList.size(); j++) {
 				Answer answer = choiceList.get(j);
+				answer.setIsSelected(false);
 				if (answer.getIsCorrect()) {
 					correct = answer.getText();
 					// break;
@@ -95,8 +96,8 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 					String askingFor = question.getAskingFor(); 
 					String questionCategory = question.getCategory();
 					Double whichpenalty = 1.0;
-					Double whichbonus = 5.0;
-					Double quantpenalty = 0.2;
+					Double whichbonus = 1.0;
+					Double quantpenalty = 1.0;
 					Double quantbonus = 1.0;
 					boolean isMatched=false;
 					if ( ( questionCategory.equals("which") || questionCategory.equals("what") ) && askingFor!=null){

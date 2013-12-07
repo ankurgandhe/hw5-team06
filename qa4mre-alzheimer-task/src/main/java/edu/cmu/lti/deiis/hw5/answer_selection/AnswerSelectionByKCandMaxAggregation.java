@@ -10,6 +10,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import edu.cmu.lti.deiis.hw5.utils.SentenceUtils;
 import edu.cmu.lti.qalab.types.Answer;
 import edu.cmu.lti.qalab.types.CandidateAnswer;
 import edu.cmu.lti.qalab.types.CandidateSentence;
@@ -18,6 +19,7 @@ import edu.cmu.lti.qalab.types.NounPhrase;
 import edu.cmu.lti.qalab.types.Question;
 import edu.cmu.lti.qalab.types.QuestionAnswerSet;
 import edu.cmu.lti.qalab.types.TestDocument;
+import edu.cmu.lti.qalab.types.Token;
 import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.cmu.lti.qalab.utils.Utils;
 
@@ -98,7 +100,41 @@ public class AnswerSelectionByKCandMaxAggregation extends
 						}
 						// + candAns.getVectorSimilarityScore()/2 ; //+
 						// candAns.getQuerySimilarityScore();
-
+						String askingFor = question.getAskingFor(); 
+	          String questionCategory = question.getCategory();
+	          Double whichpenalty = 1.0;
+	          Double whichbonus = 2.0;
+	          Double quantpenalty = 0.5;
+	          Double quantbonus = 1.0;
+	          boolean isMatched=false;
+	          if ( ( questionCategory.equals("which") || questionCategory.equals("what") ) && askingFor!=null){
+	            isMatched = SentenceUtils.doesCandAnswerMatchCategory(candAns, askingFor);
+	            if (isMatched)
+	              totalScore = totalScore*whichbonus;
+	            else
+	              totalScore = totalScore*whichpenalty;
+	          }
+	          if (questionCategory.equals("howmany")){
+	            Answer ans=null;
+	            for (j = 0; j < choiceList.size(); j++) {
+	              ans = choiceList.get(j);
+	              if (ans.getText().equals(answer)) 
+	                break;
+	            }
+	            ArrayList<Token> choiceTokens = Utils
+	                .fromFSListToCollection(ans.getTokenList(),
+	                    Token.class);
+	            boolean foundQuant = false;
+	            for (Token tk : choiceTokens){
+	              if (tk.getPos().equals("CD") || tk.getPos().equals("PDT"))
+	                foundQuant = true; 
+	            }
+	            if (foundQuant)
+	              totalScore = totalScore*quantbonus;
+	            else
+	              totalScore = totalScore*quantpenalty;
+	            
+	          }
 						Double existingVal = hshAnswer.get(answer);
 						if (existingVal == null) {
 							existingVal = new Double(0.0);
