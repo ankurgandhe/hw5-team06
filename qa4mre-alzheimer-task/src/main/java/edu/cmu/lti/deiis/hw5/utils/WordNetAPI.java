@@ -96,12 +96,12 @@ public class WordNetAPI {
 		// if(word.equalsIgnoreCase("entity")||word.equalsIgnoreCase("abstraction")||word.equalsIgnoreCase("concept")||word.equalsIgnoreCase("idea")||word.equalsIgnoreCase("abstract entity")||)
 
 		if (wordNetStopWords.contains(word)) {
-			System.out.println("returned false for " + word);
+			//System.out.println("returned false for " + word);
 			return false;
 		}
 
 		if (checked.contains(word)) {
-			System.out.println("returned false for " + word);
+			//System.out.println("returned false for " + word);
 			return false;
 		}
 
@@ -111,7 +111,7 @@ public class WordNetAPI {
 			if (wordNetStopWords.contains(currWord))
 				return false;
 		}
-		System.out.println(word);
+		//System.out.println(word);
 
 		NounSynset nounSynset;
 		// VerbReferenceSynset nounSynset;

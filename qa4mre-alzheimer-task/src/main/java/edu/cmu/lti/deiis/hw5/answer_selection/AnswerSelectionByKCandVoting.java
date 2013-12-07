@@ -10,12 +10,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import edu.cmu.lti.deiis.hw5.utils.SentenceUtils;
 import edu.cmu.lti.qalab.types.Answer;
 import edu.cmu.lti.qalab.types.CandidateAnswer;
 import edu.cmu.lti.qalab.types.CandidateSentence;
 import edu.cmu.lti.qalab.types.Question;
 import edu.cmu.lti.qalab.types.QuestionAnswerSet;
 import edu.cmu.lti.qalab.types.TestDocument;
+import edu.cmu.lti.qalab.types.Token;
 import edu.cmu.lti.qalab.utils.Utils;
 
 public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
@@ -89,6 +91,37 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 							// + 3*candSent.getRelevanceScore()
 							+ 3 * candAns.getVectorSimilarityScore()
 							+ candAns.getPMIScore();
+					
+					String askingFor = question.getAskingFor(); 
+					String questionCategory = question.getCategory();
+					Double penalty = 0.5;
+					boolean isMatched=false;
+					if ( ( questionCategory.equals("which") || questionCategory.equals("what") ) && askingFor!=null){
+						isMatched = SentenceUtils.doesCandAnswerMatchCategory(candAns, askingFor);
+						if (!isMatched)
+							totalScore = totalScore*penalty; 
+					}
+					if (questionCategory.equals("howmany")){
+						Answer ans=null;
+						for (j = 0; j < choiceList.size(); j++) {
+							ans = choiceList.get(j);
+							if (ans.getText().equals(answer)) 
+								break;
+						}
+						ArrayList<Token> choiceTokens = Utils
+								.fromFSListToCollection(ans.getTokenList(),
+										Token.class);
+						boolean foundQuant = false;
+						for (Token tk : choiceTokens){
+							if (tk.getPos().equals("CD") || tk.getPos().equals("PDT"))
+								foundQuant = true; 
+						}
+						if (!foundQuant){
+							totalScore = totalScore*penalty;
+						}
+						
+					}
+					
 					if (answer.equals("AD")
 							|| answer.equals("None of the above")) {
 						totalScore = candAns.getQuerySimilarityScore()

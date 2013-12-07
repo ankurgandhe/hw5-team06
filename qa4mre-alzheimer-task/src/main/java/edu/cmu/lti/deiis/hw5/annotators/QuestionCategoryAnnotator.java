@@ -126,7 +126,7 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
       String skt = "sort,kind,type,brand,category,class,kin,manner,species,variety,sorts,kinds,types,brands,categories,classes,manners,varieties";
 			Set<String> sktwords = SetUtil.addStringArray(null, skt.split(","));
 			
-			ArrayList<Token> askingTokens = new ArrayList<Token>();
+			//ArrayList<Token> askingTokens = new ArrayList<Token>();
 			
 			//iterate through tokens to find the complement of which/what if they're WDT words
 			if (question.getCategory()=="which" | question.getCategory()=="what"){
@@ -151,34 +151,40 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
 			        break;
 			      }else if (tPos.startsWith("NN")){
               asking+=word+" ";
-              askingTokens.add(t);
+              //askingTokens.add(t);
               nounFlag = true;
             }else if (tPos.startsWith("JJ") && !nounFlag){
               asking+=word+" ";
-              askingTokens.add(t);
+              //askingTokens.add(t);
             }else if (word.equals("of") && j>0){
               //we eliminate the SKT words if it asks for "What type of hormone?" or similar
               if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
                 asking = "";
-                askingTokens.clear();
+                //askingTokens.clear();
                 nounFlag = false;
               } else {
                 asking=asking.trim();
                 if(!asking.equals("") && nounFlag){
                   asking=asking.trim();
                   question.setAskingFor(asking);
-                  question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                  //question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
                   break;
-                } else if (!nounFlag) {asking="";askingTokens.clear();}
+                } else if (!nounFlag) {
+                	asking="";
+                	//askingTokens.clear();
+                }
               }
             }else{
               asking=asking.trim();
               if(!asking.equals("") && nounFlag){
                 asking=asking.trim();
                 question.setAskingFor(asking);
-                question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                //question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
                 break;
-              } else if (!nounFlag) {asking="";askingTokens.clear();}
+              } else if (!nounFlag) {
+            	  asking="";
+            	  //askingTokens.clear();
+              }
             }
 			    }
 			  }
@@ -205,34 +211,40 @@ public class QuestionCategoryAnnotator extends JCasAnnotator_ImplBase{
           } else if (howFlag) {
             if (tPos.startsWith("NN")){
               asking+=word+" ";
-              askingTokens.add(t);
+              //askingTokens.add(t);
               nounFlag = true;
             }else if (tPos.startsWith("JJ") && !nounFlag){
               asking+=word+" ";
-              askingTokens.add(t);
+              //askingTokens.add(t);
             }else if (word.equals("of") && j>0){
               //eliminate SKT words like in "How many types of amino acids are there?"
               if (sktwords.contains(tokenList.get(j-1).getText().toLowerCase())){
                 asking = "";
-                askingTokens.clear();
+                //askingTokens.clear();
                 nounFlag = false;
               } else {
                 asking=asking.trim();
                 if(!asking.equals("") && nounFlag){
                   asking=asking.trim();
                   question.setAskingFor(asking);
-                  question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                  //question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
                   break;
-                } else if (!nounFlag) {asking="";askingTokens.clear();}
+                } else if (!nounFlag) {
+                	asking="";
+                	//askingTokens.clear();
+                }
               }
             }else{
               asking=asking.trim();
               if(!asking.equals("") && nounFlag){
                 asking=asking.trim();
                 question.setAskingFor(asking);
-                question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
+                //question.setAskingForTokens(Utils.fromCollectionToFSList(aJCas,askingTokens));
                 break;
-              } else if (!nounFlag) {asking="";askingTokens.clear();}
+              } else if (!nounFlag) {
+            	  asking="";
+            	  //askingTokens.clear();
+              }
             }
           }
         }

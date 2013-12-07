@@ -74,7 +74,7 @@ public class SentenceUtils
 	
 	
 	
-	static boolean doesAnsweMatchCategory(Answer ans, String cat)
+	public static boolean doesAnsweMatchCategory(Answer ans, String cat)
 {
 	
 FSList fslist=ans.getNounPhraseList();
@@ -89,7 +89,7 @@ return checkNPList(list,cat);
 
 
 
-static boolean doesCandAnswerMatchCategory(CandidateAnswer cand,String cat)
+public static boolean doesCandAnswerMatchCategory(CandidateAnswer cand,String cat)
 {String text=cand.getText();
 
 if(checkNPList(text,cat))
@@ -102,7 +102,7 @@ if(checkNPList(coveredText,cat))
 return false;
 }
 
-static boolean doesSentenceMatchCategory(Sentence sent, String cat)
+public static boolean doesSentenceMatchCategory(Sentence sent, String cat)
 {
 	FSList fslist=	sent.getPhraseList();
 
