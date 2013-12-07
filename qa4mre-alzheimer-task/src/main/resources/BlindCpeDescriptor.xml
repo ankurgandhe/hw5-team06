@@ -3,14 +3,14 @@
 	<collectionReader>
 		<collectionIterator>
 			<descriptor>
-				<import location="collectionreaders/BlindCollectionTestDocReaderDescriptor.xml" />
+				<import location="collectionreaders/BlindCollectionReaderDescriptor.xml" />
 			</descriptor>
 		</collectionIterator>
 	</collectionReader>
 	<casProcessors casPoolSize="3" processingUnitThreadCount="1">
-		<casProcessor deployment="integrated" name="CpeQuestionDescriptor">
+		<casProcessor deployment="integrated" name="CpeDescriptor">
 			<descriptor>
-				<import location="SimpleQuestionRunCPE.xml" />
+				<import location="SimpleRunCPE.xml" />
 			</descriptor>
 			<deploymentParameters />
 			<errorHandling>
@@ -22,9 +22,9 @@
 			<checkpoint batch="10000" time="1000ms" />
 			<configurationParameterSettings />
 		</casProcessor>
-		<casProcessor deployment="integrated" name="CasConsumerResultDescriptor">
+		<casProcessor deployment="integrated" name="CasConsumerDescriptor">
 			<descriptor>
-				<import location="consumers/OutputRunCasConsumerDescriptor.xml" />
+				<import location="consumers/BlindCasConsumerDescriptor.xml" />
 			</descriptor>
 			<deploymentParameters />
 			<errorHandling>

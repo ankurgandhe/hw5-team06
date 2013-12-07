@@ -1,21 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<?xml version="1.0" encoding="UTF-8"?><collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>edu.cmu.lti.deiis.hw5.casconsumers.QA4MREResultCasConsumer</implementationName>
+  <implementationName>edu.cmu.lti.deiis.hw5.collectionreaders.QA4MREXMITestDocReader</implementationName>
   <processingResourceMetaData>
-    <name>CasConsumerDescriptor</name>
+    <name>CollectionReaderDescriptor</name>
     <description/>
     <version>1.0</version>
     <vendor/>
     <configurationParameters>
       <configurationParameter>
-        <name>OUTPUT_DIR</name>
-        <description>output to be written</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
-      <configurationParameter>
-        <name>THRESHOLD</name>
+        <name>INPUT_DIR</name>
+        <description>Input file to read</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -23,15 +17,10 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>OUTPUT_DIR</name>
+        <name>INPUT_DIR</name>
         <value>
-           <string>results/QAMRE11791/</string> 
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>THRESHOLD</name>
-        <value>
-          <string>3.0</string>
+          <string>XMIs/QAMRE11791/</string> 
+          <!-- <string>XMIs/12-test-alzheimer/</string> -->
         </value>
       </nameValuePair>
     </configurationParameterSettings>
@@ -52,8 +41,8 @@
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
+      <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
   <resourceManagerConfiguration/>
-</casConsumerDescription>
+</collectionReaderDescription>

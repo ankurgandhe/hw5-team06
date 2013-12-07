@@ -59,6 +59,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 			boolean isNoneOfTheAbove = false;
 			for (int j = 0; j < choiceList.size(); j++) {
 				Answer answer = choiceList.get(j);
+				answer.setIsSelected(false);
 				if (answer.getIsCorrect()) {
 					correct = answer.getText();
 					// break;
@@ -96,6 +97,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 					String questionCategory = question.getCategory();
 					Double penalty = 0.5;
 					boolean isMatched=false;
+					/*
 					if ( ( questionCategory.equals("which") || questionCategory.equals("what") ) && askingFor!=null){
 						isMatched = SentenceUtils.doesCandAnswerMatchCategory(candAns, askingFor);
 						if (!isMatched)
@@ -121,7 +123,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 						}
 						
 					}
-					
+					*/
 					if (answer.equals("AD")
 							|| answer.equals("None of the above")) {
 						totalScore = candAns.getQuerySimilarityScore()
@@ -129,12 +131,7 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 								+ candAns.getPMIScore();
 						totalScore = 0.0;
 					}
-					// double totalScore = 0.0*candAns.getSimilarityScore() +
-					// 0.0*candAns.getSynonymScore()
-					// + 2*candAns.getPMIScore() +
-					// 2.5*candAns.getVectorSimilarityScore()+
-					// 0.5*choiceList.get(candAns.getChoiceIndex()).getAnswerScore();
-					// System.out.println(totalScore);
+					
 					if (totalScore > maxScore) {
 						maxScore = totalScore;
 						selectedAnswer = answer;
@@ -181,13 +178,19 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 				bestChoice = choiceList.get(choiceList.size() - 1).getText();
 			}
 			// Select the best Choice we found
+			
 			for (int j = 0; j < choiceList.size(); j++) {
 				Answer answer = choiceList.get(j);
-				if (answer.getText().equals(bestChoice))
+				
+				if (answer.getText().equals(bestChoice) && bestChoice!=null){
 					answer.setIsSelected(true);
+					System.out.println("Selected Choice: " +"\t" + answer.getText());
+					break;
+				}
+					
 			}
 			
-			System.out.println("Correct Choice: " + "\t" + correct);
+			System.out.println("Correct Choice: " +"\t" + correct);
 			System.out.println("Best Choice: " + "\t" + bestChoice);
 			
 			if (bestChoice == null) {

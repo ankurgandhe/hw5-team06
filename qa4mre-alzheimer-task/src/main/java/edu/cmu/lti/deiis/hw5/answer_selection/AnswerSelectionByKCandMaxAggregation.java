@@ -10,6 +10,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import edu.cmu.lti.deiis.hw5.utils.SentenceUtils;
 import edu.cmu.lti.qalab.types.Answer;
 import edu.cmu.lti.qalab.types.CandidateAnswer;
 import edu.cmu.lti.qalab.types.CandidateSentence;
@@ -18,6 +19,7 @@ import edu.cmu.lti.qalab.types.NounPhrase;
 import edu.cmu.lti.qalab.types.Question;
 import edu.cmu.lti.qalab.types.QuestionAnswerSet;
 import edu.cmu.lti.qalab.types.TestDocument;
+import edu.cmu.lti.qalab.types.Token;
 import edu.cmu.lti.qalab.types.VerbPhrase;
 import edu.cmu.lti.qalab.utils.Utils;
 
@@ -25,8 +27,9 @@ public class AnswerSelectionByKCandMaxAggregation extends
 		JCasAnnotator_ImplBase {
 
 	int K_CANDIDATES = 5;
-	double total_cat1=0.0;
+	double total_cat1 = 0.0;
 	double nDocs = 0.0;
+
 	@Override
 	public void initialize(UimaContext context)
 			throws ResourceInitializationException {
@@ -37,7 +40,6 @@ public class AnswerSelectionByKCandMaxAggregation extends
 	}
 
 	@Override
-	
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		TestDocument testDoc = Utils.getTestDocumentFromCAS(aJCas);
 		ArrayList<QuestionAnswerSet> qaSet = Utils.fromFSListToCollection(
@@ -62,9 +64,10 @@ public class AnswerSelectionByKCandMaxAggregation extends
 
 			for (int j = 0; j < choiceList.size(); j++) {
 				Answer answer = choiceList.get(j);
+				answer.setIsSelected(false);
 				if (answer.getIsCorrect()) {
 					correct = answer.getText();
-					break;
+					// break;
 				}
 			}
 
@@ -85,14 +88,76 @@ public class AnswerSelectionByKCandMaxAggregation extends
 
 					if (!answer.equals("None of the above")) {
 						double totalScore = 2
-								* candAns.getTokenSimilarityScore()
-								+ 2*candAns.getQuerySimilarityScore()
-								+ 3*candSent.getRelevanceScore()
-								+ 1*candAns.getVectorSimilarityScore()
-								+0.33*candAns.getSynonymScore()
+								* candAns.getTokenSimilarityScore() + 2
+								* candAns.getQuerySimilarityScore() + 3
+								* candSent.getRelevanceScore() + 1
+								* candAns.getVectorSimilarityScore() + 0.33
+								* candAns.getSynonymScore()
 								+ candAns.getPMIScore();
-						if (answer.equals("AD")){
-							totalScore=candAns.getQuerySimilarityScore()
+
+						String askingFor = question.getAskingFor();
+						String questionCategory = question.getCategory();
+						Double whichpenalty = 1.0;
+						Double whichbonus = 2.0;
+						Double quantpenalty = 0.5;
+						Double quantbonus = 1.0;
+						boolean isMatched = false;
+						
+						if ((questionCategory.equals("which") || questionCategory
+								.equals("what")) && askingFor != null) {
+							isMatched = SentenceUtils
+									.doesCandAnswerMatchCategory(candAns,
+											askingFor);
+							if (isMatched)
+								totalScore = totalScore * whichbonus;
+							else
+								totalScore = totalScore * whichpenalty;
+						}
+						if (questionCategory.equals("howmany")) {
+							Answer ans = null;
+							for (j = 0; j < choiceList.size(); j++) {
+								ans = choiceList.get(j);
+								if (ans.getText().equals(answer))
+									break;
+							}
+							ArrayList<Token> choiceTokens = Utils
+									.fromFSListToCollection(ans.getTokenList(),
+											Token.class);
+							boolean foundQuant = false;
+							for (Token tk : choiceTokens) {
+								if (tk.getPos().equals("CD")
+										|| tk.getPos().equals("PDT"))
+									foundQuant = true;
+							}
+							if (foundQuant)
+								totalScore = totalScore * quantbonus;
+							else
+								totalScore = totalScore * quantpenalty;
+
+						}
+						/*
+						 * if ( ( questionCategory.equals("which") ||
+						 * questionCategory.equals("what") ) &&
+						 * askingFor!=null){ isMatched =
+						 * SentenceUtils.doesCandAnswerMatchCategory(candAns,
+						 * askingFor); if (!isMatched) totalScore =
+						 * totalScore*penalty; } if
+						 * (questionCategory.equals("howmany")){ Answer
+						 * ans=null; for (j = 0; j < choiceList.size(); j++) {
+						 * ans = choiceList.get(j); if
+						 * (ans.getText().equals(answer)) break; }
+						 * ArrayList<Token> choiceTokens = Utils
+						 * .fromFSListToCollection(ans.getTokenList(),
+						 * Token.class); boolean foundQuant = false; for (Token
+						 * tk : choiceTokens){ if (tk.getPos().equals("CD") ||
+						 * tk.getPos().equals("PDT")) foundQuant = true; } if
+						 * (!foundQuant){ totalScore = totalScore*penalty; }
+						 * 
+						 * }
+						 */
+
+						if (answer.equals("AD")) {
+							totalScore = candAns.getQuerySimilarityScore()
 									+ candSent.getRelevanceScore()
 									+ candAns.getPMIScore();
 						}
@@ -127,6 +192,17 @@ public class AnswerSelectionByKCandMaxAggregation extends
 				bestChoice = choiceList.get(choiceList.size() - 1).getText();
 			}
 
+			for (int j = 0; j < choiceList.size(); j++) {
+				Answer answer = choiceList.get(j);
+
+				if (answer.getText().equals(bestChoice) && bestChoice != null) {
+					answer.setIsSelected(true);
+					System.out.println("Selected Choice: " + "\t"
+							+ answer.getText());
+					break;
+				}
+
+			}
 			System.out.println("Correct Choice: " + "\t" + correct);
 			System.out.println("Best Choice: " + "\t" + bestChoice);
 
@@ -150,7 +226,7 @@ public class AnswerSelectionByKCandMaxAggregation extends
 		double cAt1 = (((double) matched) / ((double) total) * unanswered + (double) matched)
 				* (1.0 / total);
 		System.out.println("c@1 score:" + cAt1);
-		total_cat1+=cAt1;
+		total_cat1 += cAt1;
 		nDocs++;
 
 	}
@@ -165,8 +241,7 @@ public class AnswerSelectionByKCandMaxAggregation extends
 		while (it.hasNext()) {
 			String key = it.next();
 			Double val = hshAnswer.get(key);
-			
-				
+
 			System.out.println(key + "\t" + key + "\t" + val);
 			if (val > maxScore) {
 				maxScore = val;
@@ -174,15 +249,15 @@ public class AnswerSelectionByKCandMaxAggregation extends
 			}
 
 		}
-		if (maxScore < 0) {
+		if (maxScore < 7) {
 			bestAns = null;
 		}
 		return bestAns;
 	}
-	public void destroy() {
-         System.out.println("Using Max Aggegation. Average c@1:" + total_cat1 /
-         nDocs);
-}
 
+	public void destroy() {
+		System.out.println("Using Max Aggegation. Average c@1:" + total_cat1
+				/ nDocs);
+	}
 
 }
