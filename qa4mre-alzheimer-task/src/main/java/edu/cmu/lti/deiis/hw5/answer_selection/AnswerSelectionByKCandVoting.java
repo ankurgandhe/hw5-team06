@@ -94,12 +94,17 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 					
 					String askingFor = question.getAskingFor(); 
 					String questionCategory = question.getCategory();
-					Double penalty = 0.5;
+					Double whichpenalty = 1.0;
+					Double whichbonus = 5.0;
+					Double quantpenalty = 0.2;
+					Double quantbonus = 1.0;
 					boolean isMatched=false;
 					if ( ( questionCategory.equals("which") || questionCategory.equals("what") ) && askingFor!=null){
 						isMatched = SentenceUtils.doesCandAnswerMatchCategory(candAns, askingFor);
-						if (!isMatched)
-							totalScore = totalScore*penalty; 
+						if (isMatched)
+							totalScore = totalScore*whichbonus;
+						else
+						  totalScore = totalScore*whichpenalty;
 					}
 					if (questionCategory.equals("howmany")){
 						Answer ans=null;
@@ -116,9 +121,10 @@ public class AnswerSelectionByKCandVoting extends JCasAnnotator_ImplBase {
 							if (tk.getPos().equals("CD") || tk.getPos().equals("PDT"))
 								foundQuant = true; 
 						}
-						if (!foundQuant){
-							totalScore = totalScore*penalty;
-						}
+						if (foundQuant)
+							totalScore = totalScore*quantbonus;
+						else
+						  totalScore = totalScore*quantpenalty;
 						
 					}
 					
